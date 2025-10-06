@@ -1,17 +1,15 @@
 <!DOCTYPE html>
-
 <html lang="en">
-<head><meta charset="utf-8"/>
-
-<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
-<title>Snout Pet Care - Booking Component</title>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
-<style>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Snout Pet Care - Booking Component</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <style>
     :root { --primary-bg:#fce1ef; --primary-text:#432f21; --border-color:#e2e8f0; --accent-bg:#f8fafc; --selected-bg:#432f21; --white:#fff; --btn-size:44px; --font-size-base:14px; --font-size-title:18px; }
     *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
     body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background-color:var(--primary-bg);color:var(--primary-text);line-height:1.5;overscroll-behavior:none}
     .booking-container{max-width:100%;width:90vw;margin:10px auto;background:var(--white);border-radius:16px;box-shadow:0 8px 20px rgba(0,0,0,.1);overflow:hidden;transition:height .3s ease;height:auto}
-    .booking-container.pet-dropdown-open{height:auto}
     .booking-content{padding:16px}
     .form-section{display:none;animation:fadeIn .3s ease}
     .form-section.active{display:block}
@@ -33,19 +31,25 @@
     .pet-dropdown-trigger{padding:8px 12px;border:2px solid var(--border-color);border-radius:8px;background:var(--white);display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-size:var(--font-size-base);color:var(--primary-text);transition:all .2s ease;min-height:var(--btn-size);touch-action:manipulation}
     .pet-dropdown-trigger:active{border-color:var(--primary-text);background:var(--primary-bg)}
     .pet-dropdown-trigger.active{border-color:var(--primary-text);background:var(--primary-bg)}
-    .pet-dropdown-panel{position:absolute;background:var(--white);border:2px solid var(--primary-text);border-radius:8px;box-shadow:0 4px 12px rgba(67,47,33,.15);width:100%;display:none;top:calc(100% + 4px);max-height:50vh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;z-index:20}
+    .pet-dropdown-panel{position:absolute;background:var(--white);border:2px solid var(--primary-text);border-radius:8px;box-shadow:0 4px 12px rgba(67,47,33,.15);width:100%;display:none;top:calc(100% + 4px);height:150px;overflow:hidden;z-index:20}
     .pet-dropdown-panel.active{display:block}
-    .pet-type-row{display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid var(--border-color);transition:all .2s ease}
+    .pet-dropdown-panel .pet-wheel{height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:var(--accent-bg);-webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%);mask-image: linear-gradient(to bottom, transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%)}
+    .pet-dropdown-panel .pet-wheel::before, .pet-dropdown-panel .pet-wheel::after{content:""; position:absolute; left:0; right:0; height:18px; pointer-events:none; z-index:2}
+    .pet-dropdown-panel .pet-wheel::before{top:0; background:linear-gradient(to bottom, var(--accent-bg), rgba(248,250,252,0))}
+    .pet-dropdown-panel .pet-wheel::after{bottom:0; background:linear-gradient(to top, var(--accent-bg), rgba(248,250,252,0))}
+    .pet-dropdown-panel .pet-wheel::-webkit-scrollbar{width:6px}
+    .pet-dropdown-panel .pet-wheel::-webkit-scrollbar-thumb{background:rgba(0,0,0,.12); border-radius:8px}
+    .pet-type-row{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-bottom:1px solid var(--border-color);transition:all .2s ease;min-height:40px}
     .pet-type-row:active{background:var(--accent-bg)}
     .pet-type-row:last-child{border-bottom:none}
     .pet-type-name{font-size:var(--font-size-base);color:var(--primary-text);font-weight:500}
-    .pet-type-other-input{border:1px solid var(--border-color);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--accent-bg);width:100%;max-width:160px}
+    .pet-type-other-input{border:1px solid var(--border-color);border-radius:4px;padding:4px 6px;font-size:11px;background:var(--accent-bg);width:100%;max-width:120px;height:24px}
     .pet-type-other-input:focus{outline:none;border-color:var(--primary-text);background:var(--white);box-shadow:0 0 0 2px rgba(67,47,33,.1)}
-    .pet-counter{display:flex;align-items:center;gap:4px;background:var(--accent-bg);padding:4px;border-radius:8px;border:1px solid var(--border-color);min-width:80px}
-    .pet-counter-btn{width:var(--btn-size);height:var(--btn-size);border:none;border-radius:6px;background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--primary-text);font-weight:600;transition:all .2s ease;touch-action:manipulation}
+    .pet-counter{display:flex;align-items:center;gap:3px;background:var(--accent-bg);padding:3px;border-radius:6px;border:1px solid var(--border-color);min-width:70px}
+    .pet-counter-btn{width:28px;height:28px;border:none;border-radius:4px;background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--primary-text);font-weight:600;transition:all .2s ease;touch-action:manipulation}
     .pet-counter-btn:active:not(:disabled){background:var(--primary-text);color:var(--white);transform:scale(.95)}
     .pet-counter-btn:disabled{opacity:.3;cursor:not-allowed}
-    .pet-counter-input{width:28px;height:24px;border:none;text-align:center;font-size:var(--font-size-base);font-weight:700;background:transparent;color:var(--primary-text)}
+    .pet-counter-input{width:24px;height:20px;border:none;text-align:center;font-size:12px;font-weight:700;background:transparent;color:var(--primary-text)}
     .selected-pets-summary{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;padding:0 12px 12px;width:calc(100% - 24px);margin-left:12px}
     .pet-chip{background:var(--primary-bg);color:var(--primary-text);padding:4px 8px;border-radius:12px;font-size:12px;font-weight:500;display:flex;align-items:center;gap:6px;border:1px solid var(--primary-text)}
     .booking-type-grid{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:16px}
@@ -87,9 +91,16 @@
     .remove-date-btn{background:transparent;color:var(--primary-text);border:none;width:var(--btn-size);height:var(--btn-size);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;align-self:flex-end;transition:all .2s ease;touch-action:manipulation}
     .selected-date-item:active .remove-date-btn{opacity:1}
     .remove-date-btn:active{background:var(--primary-bg);transform:scale(.95)}
+    
+    /* Compact selected dates summary for calendar page */
+    .selected-dates-summary{margin-top:12px;padding:12px;background:#fff;border:1px solid var(--border-color);border-radius:10px}
+    .selected-dates-summary .selected-dates-list{display:flex;flex-wrap:wrap;gap:6px;flex-direction:row;max-height:none;overflow:visible}
+    .selected-dates-summary .selected-date-item{display:inline-flex;align-items:center;padding:4px 8px;background:var(--accent-bg);border-radius:6px;border:2px solid var(--primary-text);font-size:12px;font-weight:500;color:var(--primary-text);min-width:auto;justify-content:center;flex-direction:row}
+    .selected-dates-summary .selected-date-text{font-size:12px;font-weight:500;color:var(--primary-text)}
+    
     .time-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:1000;pointer-events:auto}
     .time-modal.active{display:flex}
-    body.modal-open{overflow:hidden;pointer-events:none}
+    body.modal-open{overflow:hidden;}
     body.modal-open .time-modal{pointer-events:auto}
     .time-modal-content{background:#fff;border-radius:12px;width:90vw;max-height:80vh;overflow-y:auto;-webkit-overflow-scrolling:touch;animation:modalSlideIn .3s ease}
     @keyframes modalSlideIn{from{opacity:0;transform:translateY(-20px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
@@ -589,7 +600,17 @@
       cursor: not-allowed;
     }
 
-  </style>
+  
+/* Single-overlay safety: block background taps without double-tap */
+.app-inert{pointer-events:none;user-select:none;touch-action:none}
+body.overlay-open #timeModal{display:flex !important;}
+
+
+/* Ensure overlay is clearly interactive */
+#timeModal{cursor:default; z-index: 2147483000;}
+#timeModal.active{display:flex;}
+
+</style>
 <style>
 /* Emphasis for house-sitting note (subtle, design-safe) */
 .hs-emph { font-weight: 600; letter-spacing: 0.2px; }
@@ -597,17 +618,211 @@
 <style>/* Hide bottom hint only for House Sitting */
 .is-housesitting .tp-foot { display: none !important; }
 </style>
+
 <style>
 :root { --snout-vh: 1vh; }
 
 /* Calendar fit on mobile */
 @media (max-width: 480px){
-  .booking-container { width: calc(100vw - 20px) !important; max-width: calc(100% - 20px) !important; margin: 10px auto !important; border-radius: 16px !important; overflow: visible !important; }
-  .booking-content { padding: 12px !important; }
-  .calendar-container { padding: 12px !important; }
-  .calendar-grid { grid-template-columns: repeat(7, minmax(0, 1fr)) !important; gap: 3px !important; }
-  .calendar-header-day, .calendar-day { min-width: 0 !important; padding: 6px !important; font-size: 11px !important; }
-  .calendar-day { border-width: 1px !important; }
+  /* === CONTAINER & LAYOUT === */
+  .booking-container { 
+    width: calc(100vw - 16px) !important; 
+    max-width: calc(100% - 16px) !important; 
+    margin: 8px auto !important; 
+    border-radius: 12px !important; 
+    overflow: visible !important; 
+    box-shadow: 0 2px 8px rgba(0,0,0,.06) !important;
+    position: relative !important;
+    z-index: 1 !important;
+    max-height: 100vh !important;
+    overflow-y: auto !important;
+    will-change: transform !important;
+    transform: translateZ(0) !important;
+  }
+  .booking-content { padding: 14px !important; }
+  
+  /* === TYPOGRAPHY === */
+  .section-header { margin-bottom: 12px !important; padding-bottom: 8px !important; }
+  .section-title { font-size: 16px !important; }
+  .section-subtitle { font-size: 12px !important; }
+  
+  /* === SERVICE CARDS === */
+  .service-grid { gap: 8px !important; margin-bottom: 10px !important; }
+  .service-card { 
+    padding: 14px 12px !important; 
+    min-height: 70px !important; 
+    border-radius: 8px !important;
+    -webkit-tap-highlight-color: rgba(0,0,0,0.1) !important;
+    touch-action: manipulation !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    transition: all 0.2s ease !important;
+  }
+  .service-card:active { transform: scale(0.98) !important; }
+  .service-icon { font-size: 24px !important; margin-bottom: 6px !important; }
+  .service-name { font-size: 14px !important; }
+  
+  /* === PET SECTION === */
+  .pet-section { margin-bottom: 10px !important; }
+  .pet-section-header { padding: 12px !important; }
+  .pet-dropdown-trigger { min-height: 44px !important; }
+  .pet-dropdown-panel {
+    max-height: 200px !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior: contain !important;
+  }
+  .pet-counter-btn {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 14px !important;
+  }
+  
+  /* === BOOKING TYPE === */
+  .booking-type-grid { gap: 8px !important; margin-bottom: 12px !important; }
+  .type-card { 
+    padding: 14px !important; 
+    min-height: 60px !important;
+    border-radius: 8px !important;
+    -webkit-tap-highlight-color: rgba(0,0,0,0.1) !important;
+    touch-action: manipulation !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    transition: all 0.2s ease !important;
+  }
+  .type-card:active { transform: scale(0.98) !important; }
+  .type-icon { font-size: 20px !important; }
+  .type-label { font-size: 14px !important; }
+  
+  /* === CALENDAR === */
+  .calendar-container { padding: 14px !important; margin-bottom: 12px !important; }
+  .calendar-header { margin-bottom: 10px !important; }
+  .calendar-title { font-size: 16px !important; }
+  .calendar-nav { 
+    width: 40px !important; 
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+  }
+  .calendar-grid { 
+    grid-template-columns: repeat(7, minmax(0, 1fr)) !important; 
+    gap: 3px !important; 
+  }
+  .calendar-header-day, .calendar-day { 
+    min-width: 0 !important; 
+    padding: 8px 4px !important; 
+    font-size: 12px !important; 
+  }
+  .calendar-day { 
+    border-width: 1px !important; 
+    min-height: 40px !important;
+    border-radius: 6px !important;
+    -webkit-tap-highlight-color: rgba(0,0,0,0.1) !important;
+    touch-action: manipulation !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    transition: all 0.2s ease !important;
+    background: var(--white) !important;
+    color: var(--primary-text) !important;
+  }
+  .calendar-day:active { transform: scale(0.98) !important; }
+  .calendar-day:not(.selected):not(.today):not(.disabled) {
+    background: var(--white) !important;
+    border-color: var(--border-color) !important;
+  }
+  .calendar-day:nth-child(6),
+  .calendar-day:nth-child(7n+6),
+  .calendar-day[data-day="6"] {
+    background: var(--white) !important;
+    color: var(--primary-text) !important;
+    border-color: var(--border-color) !important;
+  }
+  
+  /* === SELECTED DATES === */
+  .selected-dates-container { margin-top: 10px !important; padding: 12px !important; }
+  .selected-dates-list {
+    max-height: 50vh !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior: contain !important;
+  }
+  .selected-date-item {
+    padding: 10px !important;
+    margin-bottom: 6px !important;
+  }
+  .add-times-btn, .remove-date-btn {
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 14px !important;
+  }
+  
+  /* === CONTACT FORM === */
+  .contact-input { 
+    padding: 12px !important; 
+    font-size: 16px !important; 
+    min-height: 48px !important;
+    border-radius: 8px !important;
+  }
+  .contact-textarea { 
+    padding: 12px !important; 
+    font-size: 16px !important; 
+    min-height: 80px !important;
+    border-radius: 8px !important;
+  }
+  .contact-row { gap: 8px !important; }
+  .contact-group { margin-bottom: 8px !important; }
+  
+  /* === BUTTONS === */
+  .btn { 
+    padding: 14px !important; 
+    font-size: 15px !important; 
+    min-height: 48px !important; 
+    border-radius: 8px !important;
+    margin-bottom: 8px !important;
+    -webkit-tap-highlight-color: rgba(0,0,0,0.1) !important;
+    touch-action: manipulation !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    transition: all 0.2s ease !important;
+  }
+  .btn:active { transform: scale(0.98) !important; }
+  
+  /* === POLICY & CONFIRMATION === */
+  .policy-checkbox { 
+    padding: 12px !important; 
+    margin: 10px 0 !important;
+    border-radius: 8px !important;
+  }
+  .confirmation-message { 
+    padding: 16px !important; 
+    margin: 12px 0 !important;
+    border-radius: 8px !important;
+    font-size: 14px !important;
+  }
+  
+  /* === TIME SLOTS === */
+  .time-slots-grid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)) !important;
+    gap: 6px !important;
+  }
+  .time-slot {
+    padding: 10px !important;
+    font-size: 13px !important;
+    min-height: 44px !important;
+  }
+  
+  /* === MODALS === */
+  .time-modal { padding: 16px !important; }
+  .time-modal-content {
+    max-height: 80vh !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior: contain !important;
+  }
+  
+  /* === INPUT PREVENTION === */
+  input[type="text"], input[type="email"], input[type="tel"], textarea, select {
+    font-size: 16px !important;
+  }
 }
 
 /* Smooth pet dropdown and anti-jank */
@@ -702,29 +917,17 @@
   }
   .booking-container, .booking-content, .pet-dropdown, .service-card{ overflow: visible !important; }
 }
+
+/* Webflow-specific mobile optimizations */
+/* Mobile styles consolidated above - no duplicates needed */
 </style>
+
+
 <style>
 /* CLEAN-FINAL v2: Bigger mobile calendar and 5-row times list */
 
 /* 1) Calendar: maximize within form on small screens */
-@media (max-width: 480px){
-  .calendar-container{
-    padding: 8px !important;      /* small padding to give grid more room */
-  }
-  .calendar-grid{
-    grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
-    gap: 2px !important;          /* tighter gaps so cells can be larger */
-  }
-  .calendar-header-day, .calendar-day{
-    min-width: 0 !important;
-    padding: 10px 6px !important; /* larger hit area */
-    font-size: 13px !important;   /* larger text for visibility */
-    line-height: 1.1 !important;
-  }
-  .calendar-title{
-    font-size: 18px !important;
-  }
-}
+/* Removed conflicting mobile styles - using consolidated mobile styles above */
 
 /* 2) Select Times (overlay): show approximately 5 rows */
 @media (max-width: 900px){
@@ -738,141 +941,167 @@
   }
 }
 </style>
+
 </head>
 <body>
-<div class="booking-container" data-wf-form="booking">
-<div class="booking-content">
-<div class="form-section active" data-step="1" id="step1">
-<div class="section-header"><div><h2 class="section-title">Choose Your Service</h2></div></div>
-<div class="service-grid">
-<div class="service-card" data-service="dropins" onclick="selectService(this, 'dropins')"><div class="service-icon"><i class="fas fa-home"></i></div><div class="service-name">Drop-Ins</div></div>
-<div class="service-card" data-service="housesitting" onclick="selectService(this, 'housesitting')"><div class="service-icon"><i class="fas fa-couch"></i></div><div class="service-name">House Sitting</div></div>
-<div class="service-card" data-service="walks" onclick="selectService(this, 'walks')"><div class="service-icon"><i class="fas fa-dog"></i></div><div class="service-name">Walks</div></div>
-<div class="service-card" data-service="taxi" onclick="selectService(this, 'taxi')"><div class="service-icon"><i class="fas fa-car"></i></div><div class="service-name">Pet Taxi</div></div>
-</div>
-<div class="pet-section" id="petSection" style="display:none;">
-<div class="pet-section-header"><h3 class="pet-section-title">Your Pets</h3></div>
-<div class="pet-dropdown">
-<div class="pet-dropdown-trigger" onclick="togglePetPanel()"><span id="petTriggerText">Select your pets</span><i class="fas fa-chevron-down" id="petChevron"></i></div>
-<div class="pet-dropdown-panel" id="petPanel">
-<div class="pet-type-row"><span class="pet-type-name">Dog</span><div class="pet-counter" data-type="dog"><button class="pet-counter-btn" onclick="updatePetCount('dog', -1)">−</button><input class="pet-counter-input" readonly="" value="0"/><button class="pet-counter-btn" onclick="updatePetCount('dog', 1)">+</button></div></div>
-<div class="pet-type-row"><span class="pet-type-name">Cat</span><div class="pet-counter" data-type="cat"><button class="pet-counter-btn" onclick="updatePetCount('cat', -1)">−</button><input class="pet-counter-input" readonly="" value="0"/><button class="pet-counter-btn" onclick="updatePetCount('cat', 1)">+</button></div></div>
-<div class="pet-type-row"><span class="pet-type-name">Bird</span><div class="pet-counter" data-type="bird"><button class="pet-counter-btn" onclick="updatePetCount('bird', -1)">−</button><input class="pet-counter-input" readonly="" value="0"/><button class="pet-counter-btn" onclick="updatePetCount('bird', 1)">+</button></div></div>
-<div class="pet-type-row"><span class="pet-type-name">Farm Animal</span><div class="pet-counter" data-type="farm"><button class="pet-counter-btn" onclick="updatePetCount('farm', -1)">−</button><input class="pet-counter-input" readonly="" value="0"/><button class="pet-counter-btn" onclick="updatePetCount('farm', 1)">+</button></div></div>
-<div class="pet-type-row"><span class="pet-type-name">Reptile</span><div class="pet-counter" data-type="reptile"><button class="pet-counter-btn" onclick="updatePetCount('reptile', -1)">−</button><input class="pet-counter-input" readonly="" value="0"/><button class="pet-counter-btn" onclick="updatePetCount('reptile', 1)">+</button></div></div>
-<div class="pet-type-row">
-<span class="pet-type-name">Other</span>
-<input class="pet-type-other-input" id="customPetInput" oninput="debounce(handleCustomPetType, 300)(this.value)" placeholder="Enter type (e.g., Fish)"/>
-<div class="pet-counter" data-type="other"><button class="pet-counter-btn" onclick="updatePetCount('other', -1)">−</button><input class="pet-counter-input" readonly="" value="0"/><button class="pet-counter-btn" onclick="updatePetCount('other', 1)">+</button></div>
-</div>
-</div>
-</div>
-<div class="selected-pets-summary" id="petSummary"></div>
-</div>
-<div class="booking-type-grid" id="bookingTypeSection" style="display:none;">
-<div class="type-card selected" data-type="one-time" onclick="selectType(this, 'one-time')"><div class="type-icon"><i class="fas fa-calendar-day"></i></div><div class="type-label">One Time</div></div>
-<div class="type-card" data-type="weekly" onclick="selectType(this, 'weekly')"><div class="type-icon"><i class="fas fa-calendar-week"></i></div><div class="type-label">Weekly</div></div>
-<div class="toggle-checkbox" id="houseSittingToggle" style="display:none;">
-<input id="care24Hour" onchange="update24HourCare(this.checked)" type="checkbox"/>
-<label class="toggle-text" for="care24Hour">24-Hour Care</label>
-</div>
-</div>
-<button class="btn btn-primary" data-wf-action="next" disabled="" id="nextBtn1" onclick="nextStep(2)"><i class="fas fa-arrow-right"></i> Next: Choose Dates</button>
-</div>
-<div class="form-section" data-step="2" id="step2">
-<div class="section-header">
-<div>
-<h2 class="section-title">Select Your Dates</h2>
-<p class="section-subtitle" id="calendarSubtitle">Tap dates to select/deselect. Tap + to choose times.</p>
-</div>
-</div>
-<div class="calendar-container">
-<div class="calendar-header">
-<button class="calendar-nav" onclick="prevMonth()"><i class="fas fa-chevron-left"></i></button>
-<div class="calendar-title" id="calendarTitle">Loading…</div>
-<button class="calendar-nav" onclick="nextMonth()"><i class="fas fa-chevron-right"></i></button>
-</div>
-<div class="calendar-grid" id="calendarGrid">
-<div class="calendar-header-day">Sun</div><div class="calendar-header-day">Mon</div><div class="calendar-header-day">Tue</div><div class="calendar-header-day">Wed</div><div class="calendar-header-day">Thu</div><div class="calendar-header-day">Fri</div><div class="calendar-header-day">Sat</div>
-</div>
-</div>
-<div class="selected-dates-container" id="selectedDatesContainer" style="display:none;">
-<div class="selected-dates-header">
-<div class="selected-dates-title">Selected Dates <span class="selected-date-count" id="selectedDateCountNum">0</span></div>
-<label class="apply-all-toggle" id="applyAllContainer" style="display:none;">
-<input aria-checked="false" id="applyAllToggle" role="switch" type="checkbox"/>
-<span aria-hidden="true" class="switch"></span>
-<span class="toggle-label">Apply to all dates</span>
-</label>
-</div>
-<div class="selected-dates-list" id="selectedDatesList"></div>
-</div>
-<div class="house-sitting-note" id="houseSittingNote" style="display:none;">
-<i class="fas fa-home"></i>
-<p style="margin:0;">When booking <span class="hs-emph">house sitting</span>, select <span class="hs-emph">consecutive days</span>. Use the <span class="hs-emph">first day</span> to set the <span class="hs-emph">start time</span> and the <span class="hs-emph">last day</span> to set the <span class="hs-emph">end time</span>.</p>
-</div>
-<button class="btn btn-secondary" data-wf-action="back" onclick="prevStep(1)"><i class="fas fa-arrow-left"></i> Back</button>
-<button class="btn btn-primary" data-wf-action="next" disabled="" id="nextBtn2" onclick="nextStep(3)">Next: Contact Info</button>
-</div>
-<div class="form-section" data-step="3" id="step3">
-<div class="section-header">
-<div><h2 class="section-title">Contact Information</h2><p class="section-subtitle">Final details to confirm your booking</p></div>
-</div>
-<div class="contact-grid" data-wf-form-section="contact">
-<div class="contact-row">
-<div class="contact-group"><label class="contact-label" for="firstName">First Name *</label><input autocomplete="given-name" class="contact-input" data-wf-field="firstName" id="firstName" name="firstName" placeholder="John" required="" type="text"/></div>
-<div class="contact-group"><label class="contact-label" for="lastName">Last Name *</label><input autocomplete="family-name" class="contact-input" data-wf-field="lastName" id="lastName" name="lastName" placeholder="Doe" required="" type="text"/></div>
-</div>
-<div class="contact-row">
-<div class="contact-group"><label class="contact-label" for="phone">Phone Number *</label><input autocomplete="tel" class="contact-input" data-wf-field="phone" id="phone" name="phone" placeholder="(123) 456-7890" required="" type="tel"/></div>
-<div class="contact-group"><label class="contact-label" for="email">Email *</label><input autocomplete="email" class="contact-input" data-wf-field="email" id="email" name="email" placeholder="you@example.com" required="" type="email"/></div>
-</div>
-<div class="contact-group full-width" id="addressGroup"><label class="contact-label" for="address">Service Address *</label><textarea autocomplete="street-address" class="contact-input contact-textarea" data-wf-field="address" id="address" name="address" placeholder="123 Main St, City, State 12345" required=""></textarea></div>
-<div class="contact-group full-width" id="startingAddressGroup" style="display:none;"><label class="contact-label" for="startingAddress">Starting Address *</label><textarea class="contact-input contact-textarea" data-wf-field="startingAddress" id="startingAddress" name="startingAddress" placeholder="Starting address for pet taxi" required=""></textarea></div>
-<div class="contact-group full-width" id="endingAddressGroup" style="display:none;"><label class="contact-label" for="endingAddress">Ending Address *</label><textarea class="contact-input contact-textarea" data-wf-field="endingAddress" id="endingAddress" name="endingAddress" placeholder="Destination address for pet taxi" required=""></textarea></div>
-<div class="contact-group full-width"><label class="contact-label" for="instructions">Additional Notes</label><textarea class="contact-input contact-textarea" data-wf-field="instructions" id="instructions" name="instructions" placeholder="Any additional notes, questions, or preferred sitter..."></textarea></div>
-</div>
-<div class="policy-checkbox">
-<input data-wf-field="policyAgreement" id="policyAgreement" name="policyAgreement" required="" type="checkbox"/>
-<label class="policy-text" for="policyAgreement">I agree to Snout Services' booking policies, including deposits and cancellation windows, and I understand all requests must be submitted through this form.</label>
-</div>
-<button class="btn btn-primary" data-wf-action="submit" disabled="" id="submitBtn" onclick="submitForm()" type="button"><i class="fas fa-paper-plane"></i> Submit Booking</button>
-<button class="btn btn-secondary" data-wf-action="back" onclick="prevStep(2)" type="button"><i class="fas fa-arrow-left"></i> Back</button>
-</div>
-<div class="form-section" data-step="4" id="step4">
-<div class="section-header"><div class="section-icon"><i class="fas fa-check-circle"></i></div><div><h2 class="section-title">Booking received</h2></div></div>
-<p class="confirmation-message">Your booking request has been submitted.<br/>Thank you for booking with Snout Services!</p>
-<button class="btn btn-primary" data-wf-action="reset" onclick="startNewBooking()"><i class="fas fa-plus"></i> Start New Booking</button>
-</div>
-</div>
-</div>
-<div class="time-modal" id="timeModal">
-<div class="time-modal-content">
-<div class="time-modal-header">
-<h3 class="time-modal-title" id="modalDateTitle">Select Times</h3>
-<button class="time-modal-close" onclick="closeTimeModal()"><i class="fas fa-times"></i></button>
-</div>
-<div class="time-modal-date"><div class="time-modal-date-text" id="modalDateDisplay"></div></div>
-<div class="time-slots-container" id="timeSlotsContainer"><div id="snoutWheelMount"></div></div>
-<div class="time-picker-slot"></div>
-<div class="time-modal-actions"><button class="btn btn-secondary btn-small" data-wf-action="close-modal" onclick="closeTimeModal()">Done</button></div>
-</div>
-</div>
-<div aria-live="polite" class="toast" id="toast" role="status"></div>
-<template id="timePickerTemplate">
-<div aria-label="Select Times" class="tp-card" role="dialog">
-<div class="tp-head">
-<div class="tp-title">Select Times</div>
-<button class="tp-done" type="button">Done</button>
-</div>
-<div class="tp-list">
+  <div class="booking-container" data-wf-form="booking">
+    <div class="booking-content">
+      <div id="step1" class="form-section active" data-step="1">
+        <div class="section-header"><div><h2 class="section-title">Choose Your Service</h2></div></div>
+        <div class="service-grid">
+          <div class="service-card" data-service="dropins" onclick="selectService(this, 'dropins')"><div class="service-icon"><i class="fas fa-home"></i></div><div class="service-name">Drop-Ins</div></div>
+          <div class="service-card" data-service="housesitting" onclick="selectService(this, 'housesitting')"><div class="service-icon"><i class="fas fa-couch"></i></div><div class="service-name">House Sitting</div></div>
+          <div class="service-card" data-service="walks" onclick="selectService(this, 'walks')"><div class="service-icon"><i class="fas fa-dog"></i></div><div class="service-name">Walks</div></div>
+          <div class="service-card" data-service="taxi" onclick="selectService(this, 'taxi')"><div class="service-icon"><i class="fas fa-car"></i></div><div class="service-name">Pet Taxi</div></div>
+        </div>
+        <div class="pet-section" id="petSection" style="display:none;">
+          <div class="pet-section-header"><h3 class="pet-section-title">Your Pets</h3></div>
+          <div class="pet-dropdown">
+            <div class="pet-dropdown-trigger" onclick="togglePetPanel()"><span id="petTriggerText">Select your pets</span><i class="fas fa-chevron-down" id="petChevron"></i></div>
+            <div class="pet-dropdown-panel" id="petPanel">
+              <div class="pet-wheel">
+                <div class="pet-type-row"><span class="pet-type-name">Dog</span><div class="pet-counter" data-type="dog"><button class="pet-counter-btn" onclick="updatePetCount('dog', -1)">−</button><input class="pet-counter-input" value="0" readonly /><button class="pet-counter-btn" onclick="updatePetCount('dog', 1)">+</button></div></div>
+                <div class="pet-type-row"><span class="pet-type-name">Cat</span><div class="pet-counter" data-type="cat"><button class="pet-counter-btn" onclick="updatePetCount('cat', -1)">−</button><input class="pet-counter-input" value="0" readonly /><button class="pet-counter-btn" onclick="updatePetCount('cat', 1)">+</button></div></div>
+                <div class="pet-type-row"><span class="pet-type-name">Bird</span><div class="pet-counter" data-type="bird"><button class="pet-counter-btn" onclick="updatePetCount('bird', -1)">−</button><input class="pet-counter-input" value="0" readonly /><button class="pet-counter-btn" onclick="updatePetCount('bird', 1)">+</button></div></div>
+                <div class="pet-type-row"><span class="pet-type-name">Farm Animal</span><div class="pet-counter" data-type="farm"><button class="pet-counter-btn" onclick="updatePetCount('farm', -1)">−</button><input class="pet-counter-input" value="0" readonly /><button class="pet-counter-btn" onclick="updatePetCount('farm', 1)">+</button></div></div>
+                <div class="pet-type-row"><span class="pet-type-name">Reptile</span><div class="pet-counter" data-type="reptile"><button class="pet-counter-btn" onclick="updatePetCount('reptile', -1)">−</button><input class="pet-counter-input" value="0" readonly /><button class="pet-counter-btn" onclick="updatePetCount('reptile', 1)">+</button></div></div>
+                <div class="pet-type-row">
+                  <span class="pet-type-name">Other</span>
+                  <input class="pet-type-other-input" placeholder="Enter type (e.g., Fish)" id="customPetInput" oninput="debounce(handleCustomPetType, 300)(this.value)" />
+                  <div class="pet-counter" data-type="other"><button class="pet-counter-btn" onclick="updatePetCount('other', -1)">−</button><input class="pet-counter-input" value="0" readonly /><button class="pet-counter-btn" onclick="updatePetCount('other', 1)">+</button></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="selected-pets-summary" id="petSummary"></div>
+        </div>
+        <div class="booking-type-grid" id="bookingTypeSection" style="display:none;">
+          <div class="type-card selected" data-type="one-time" onclick="selectType(this, 'one-time')"><div class="type-icon"><i class="fas fa-calendar-day"></i></div><div class="type-label">One Time</div></div>
+          <div class="type-card" data-type="weekly" onclick="selectType(this, 'weekly')"><div class="type-icon"><i class="fas fa-calendar-week"></i></div><div class="type-label">Weekly</div></div>
+          <div class="toggle-checkbox" id="houseSittingToggle" style="display:none;">
+            <input type="checkbox" id="care24Hour" onchange="update24HourCare(this.checked)" />
+            <label class="toggle-text" for="care24Hour">24-Hour Care</label>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="nextStep(2)" id="nextBtn1" disabled data-wf-action="next"><i class="fas fa-arrow-right"></i> Next: Choose Dates</button>
+      </div>
 
-</div>
-<div class="tp-foot">
-<div class="tp-empty">No times yet. Tap a time to add. 30m by default.</div>
-</div>
-</div>
-</template>
+      <div id="step2" class="form-section" data-step="2">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Select Your Dates</h2>
+            <p class="section-subtitle" id="calendarSubtitle">Tap dates to select/deselect. Tap + to choose times.</p>
+          </div>
+        </div>
+        <div class="calendar-container">
+          <div class="calendar-header">
+            <button class="calendar-nav" onclick="prevMonth()"><i class="fas fa-chevron-left"></i></button>
+            <div class="calendar-title" id="calendarTitle">Loading…</div>
+            <button class="calendar-nav" onclick="nextMonth()"><i class="fas fa-chevron-right"></i></button>
+          </div>
+          <div class="calendar-grid" id="calendarGrid">
+            <div class="calendar-header-day">Sun</div><div class="calendar-header-day">Mon</div><div class="calendar-header-day">Tue</div><div class="calendar-header-day">Wed</div><div class="calendar-header-day">Thu</div><div class="calendar-header-day">Fri</div><div class="calendar-header-day">Sat</div>
+          </div>
+        </div>
+        <div id="selectedDatesSummary" class="selected-dates-summary" style="display:none;">
+          <div class="selected-dates-header">
+            <div class="selected-dates-title">Selected Dates <span class="selected-date-count" id="selectedDateCountNum">0</span></div>
+          </div>
+          <div class="selected-dates-list" id="selectedDatesSummaryList"></div>
+        </div>
+        <button class="btn btn-secondary" onclick="prevStep(1)" data-wf-action="back"><i class="fas fa-arrow-left"></i> Back</button>
+        <button class="btn btn-primary" onclick="nextStep(3)" id="nextBtn2" disabled data-wf-action="next">Next: Select Times</button>
+      </div>
+
+      <div id="step3" class="form-section" data-step="3">
+        <div class="section-header">
+          <div><h2 class="section-title">Select Times for Your Dates</h2><p class="section-subtitle">Choose times for each selected date</p></div>
+        </div>
+        <div id="selectedDatesContainer" class="selected-dates-container">
+          <div class="selected-dates-header">
+            <div class="selected-dates-title">Selected Dates <span class="selected-date-count" id="selectedDateCountNum2">0</span></div>
+            <label id="applyAllContainer" class="apply-all-toggle" style="display:none;">
+              <input type="checkbox" id="applyAllToggle" role="switch" aria-checked="false" />
+              <span class="switch" aria-hidden="true"></span>
+              <span class="toggle-label">Apply to all dates</span>
+            </label>
+          </div>
+          <div class="selected-dates-list" id="selectedDatesList"></div>
+        </div>
+        <div id="houseSittingNote" class="house-sitting-note" style="display:none;">
+          <i class="fas fa-home"></i>
+          <p style="margin:0;">When booking <span class="hs-emph">house sitting</span>, select <span class="hs-emph">consecutive days</span>. Use the <span class="hs-emph">first day</span> to set the <span class="hs-emph">start time</span> and the <span class="hs-emph">last day</span> to set the <span class="hs-emph">end time</span>.</p>
+        </div>
+        <button class="btn btn-secondary" onclick="prevStep(2)" data-wf-action="back"><i class="fas fa-arrow-left"></i> Back</button>
+        <button class="btn btn-primary" onclick="nextStep(4)" id="nextBtn3" disabled data-wf-action="next">Next: Contact Info</button>
+      </div>
+
+      <div id="step4" class="form-section" data-step="4">
+        <div class="section-header">
+          <div><h2 class="section-title">Contact Information</h2><p class="section-subtitle">Final details to confirm your booking</p></div>
+        </div>
+        <div class="contact-grid" data-wf-form-section="contact">
+          <div class="contact-row">
+            <div class="contact-group"><label class="contact-label" for="firstName">First Name *</label><input type="text" class="contact-input" id="firstName" name="firstName" placeholder="John" required data-wf-field="firstName" autocomplete="given-name" /></div>
+            <div class="contact-group"><label class="contact-label" for="lastName">Last Name *</label><input type="text" class="contact-input" id="lastName" name="lastName" placeholder="Doe" required data-wf-field="lastName" autocomplete="family-name" /></div>
+          </div>
+          <div class="contact-row">
+            <div class="contact-group"><label class="contact-label" for="phone">Phone Number *</label><input type="tel" class="contact-input" id="phone" name="phone" placeholder="(123) 456-7890" required data-wf-field="phone" autocomplete="tel" /></div>
+            <div class="contact-group"><label class="contact-label" for="email">Email *</label><input type="email" class="contact-input" id="email" name="email" placeholder="you@example.com" required data-wf-field="email" autocomplete="email" /></div>
+          </div>
+          <div class="contact-group full-width" id="addressGroup"><label class="contact-label" for="address">Service Address *</label><textarea class="contact-input contact-textarea" id="address" name="address" placeholder="123 Main St, City, State 12345" required data-wf-field="address" autocomplete="street-address"></textarea></div>
+          <div class="contact-group full-width" id="startingAddressGroup" style="display:none;"><label class="contact-label" for="startingAddress">Starting Address *</label><textarea class="contact-input contact-textarea" id="startingAddress" name="startingAddress" placeholder="Starting address for pet taxi" required data-wf-field="startingAddress"></textarea></div>
+          <div class="contact-group full-width" id="endingAddressGroup" style="display:none;"><label class="contact-label" for="endingAddress">Ending Address *</label><textarea class="contact-input contact-textarea" id="endingAddress" name="endingAddress" placeholder="Destination address for pet taxi" required data-wf-field="endingAddress"></textarea></div>
+          <div class="contact-group full-width"><label class="contact-label" for="instructions">Additional Notes</label><textarea class="contact-input contact-textarea" id="instructions" name="instructions" placeholder="Any additional notes, questions, or preferred sitter..." data-wf-field="instructions"></textarea></div>
+        </div>
+        <div class="policy-checkbox">
+          <input type="checkbox" id="policyAgreement" name="policyAgreement" required data-wf-field="policyAgreement" />
+          <label class="policy-text" for="policyAgreement">I agree to Snout Services' booking policies, including deposits and cancellation windows, and I understand all requests must be submitted through this form.</label>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="submitForm()" id="submitBtn" disabled data-wf-action="submit"><i class="fas fa-paper-plane"></i> Submit Booking</button>
+        <button type="button" class="btn btn-secondary" onclick="prevStep(3)" data-wf-action="back"><i class="fas fa-arrow-left"></i> Back</button>
+      </div>
+
+      <div id="step5" class="form-section" data-step="5">
+        <div class="section-header"><div class="section-icon"><i class="fas fa-check-circle"></i></div><div><h2 class="section-title">Booking received</h2></div></div>
+        <p class="confirmation-message">Your booking request has been submitted.<br />Thank you for booking with Snout Services!</p>
+        <button class="btn btn-primary" onclick="startNewBooking()" data-wf-action="reset"><i class="fas fa-plus"></i> Start New Booking</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="timeModal" class="time-modal">
+    <div class="time-modal-content">
+      <div class="time-modal-header">
+        <h3 class="time-modal-title" id="modalDateTitle">Select Times</h3>
+        <button class="time-modal-close" onclick="closeTimeModal()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="time-modal-date"><div class="time-modal-date-text" id="modalDateDisplay"></div></div>
+      <div class="time-slots-container" id="timeSlotsContainer"><div id="snoutWheelMount"></div></div>
+      <div class="time-picker-slot"></div>
+      <div class="time-modal-actions"><button class="btn btn-secondary btn-small" onclick="closeTimeModal()" data-wf-action="close-modal">Done</button></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <template id="timePickerTemplate">
+    <div class="tp-card" role="dialog" aria-label="Select Times">
+      <div class="tp-head">
+        <div class="tp-title">Select Times</div>
+        <button type="button" class="tp-done">Done</button>
+      </div>
+
+      <div class="tp-list">
+        <!-- Build 5:00 AM → 10:30 PM in JS -->
+      </div>
+
+      <div class="tp-foot">
+        <div class="tp-empty">No times yet. Tap a time to add. 30m by default.</div>
+      </div>
+    </div>
+  </template>
+
 <script>
 /* Unified Script Build: consolidated for maintainability. */
 const state = {
@@ -909,6 +1138,7 @@ const state = {
       calendarTitle: document.getElementById('calendarTitle'),
       selectedDatesContainer: document.getElementById('selectedDatesContainer'),
       selectedDateCountNum: document.getElementById('selectedDateCountNum'),
+      selectedDateCountNum2: document.getElementById('selectedDateCountNum2'),
       selectedDatesList: document.getElementById('selectedDatesList'),
       calendarSubtitle: document.getElementById('calendarSubtitle'),
       timeModal: document.getElementById('timeModal'),
@@ -917,6 +1147,7 @@ const state = {
       timeSlotsContainer: document.querySelector('.time-slots-container'),
       nextBtn1: document.getElementById('nextBtn1'),
       nextBtn2: document.getElementById('nextBtn2'),
+      nextBtn3: document.getElementById('nextBtn3'),
       submitBtn: document.getElementById('submitBtn'),
       addressGroup: document.getElementById('addressGroup'),
       startingAddressGroup: document.getElementById('startingAddressGroup'),
@@ -1009,7 +1240,7 @@ const state = {
 
           snout_renderWheel(dateStr);
           updateSelectedDatesDisplay();
-          updateNextButton2();
+          updateNextButton3();
           refreshApplyAllUI();
           if(state.applyAllSync && dateStr === getFirstDateStr()){
             copyFirstDateTimesToOthers();
@@ -1061,7 +1292,7 @@ const state = {
 
           snout_renderWheel(dateStr);
           updateSelectedDatesDisplay();
-          updateNextButton2();
+          updateNextButton3();
           refreshApplyAllUI();
           if(state.applyAllSync && dateStr === getFirstDateStr()){
             copyFirstDateTimesToOthers();
@@ -1100,7 +1331,7 @@ const state = {
           state.dateTimes[dateStr] = (state.dateTimes[dateStr] || []).filter(e => e.time !== entry.time);
           snout_renderWheel(dateStr);
           updateSelectedDatesDisplay();
-          updateNextButton2();
+          updateNextButton3();
           refreshApplyAllUI();
           if(state.applyAllSync && dateStr === getFirstDateStr()){
             copyFirstDateTimesToOthers();
@@ -1266,8 +1497,9 @@ const state = {
       elements.petPanel.classList.toggle('active', state.isPetPanelOpen);
       trigger.classList.toggle('active', state.isPetPanelOpen);
       elements.petChevron.style.transform = state.isPetPanelOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+      // Remove form extension behavior - keep fixed height
       elements.petSection.style.height='auto';
-      elements.bookingContainer.classList.toggle('pet-dropdown-open', state.isPetPanelOpen);
+      // Don't add pet-dropdown-open class to prevent form extension
       if(state.isPetPanelOpen){ setTimeout(()=>{ elements.petPanel.scrollIntoView({behavior:'smooth', block:'nearest'}); },300); }
     }
 
@@ -1301,21 +1533,27 @@ const state = {
           if(state.selectedService==='housesitting'){
             if(state.selectedDates.length<2){ alert('Please select at least a start and end date for house sitting'); return false; }
             if(state.selectedDates[1] <= state.selectedDates[0]){ alert('End date must be after the start date'); return false; }
-            const startDateStr = normalizeDate(state.selectedDates[0]);
-            const endDateStr   = normalizeDate(state.selectedDates[state.selectedDates.length-1]);
-            if(!(state.dateTimes[startDateStr] && state.dateTimes[startDateStr].length===1)){ alert('Please select exactly one start time'); return false; }
-            if(!(state.dateTimes[endDateStr] && state.dateTimes[endDateStr].length===1)){ alert('Please select exactly one end time'); return false; }
             if(state.selectedDates.length>14){
               if(!confirm('House sitting bookings longer than 14 days require special approval. Continue?')) return false;
             }
           } else {
             if(state.selectedDates.length===0){ alert('Please select at least one date'); return false; }
+          }
+          return true;
+        }
+        case 3: {
+          if(state.selectedService==='housesitting'){
+            const startDateStr = normalizeDate(state.selectedDates[0]);
+            const endDateStr   = normalizeDate(state.selectedDates[state.selectedDates.length-1]);
+            if(!(state.dateTimes[startDateStr] && state.dateTimes[startDateStr].length===1)){ alert('Please select exactly one start time'); return false; }
+            if(!(state.dateTimes[endDateStr] && state.dateTimes[endDateStr].length===1)){ alert('Please select exactly one end time'); return false; }
+          } else {
             const firstDateStr = normalizeDate(state.selectedDates[0]);
             if(!(state.dateTimes[firstDateStr] && state.dateTimes[firstDateStr].length>0)){ alert('Please select at least one time for the first date'); return false; }
           }
           return true;
         }
-        case 3: {
+        case 4: {
           const requiredFields=['firstName','lastName','phone','email'];
           if(state.selectedService==='taxi'){ requiredFields.push('startingAddress','endingAddress'); } else { requiredFields.push('address'); }
           const allFilled = requiredFields.every(id=>document.getElementById(id).value.trim());
@@ -1327,8 +1565,9 @@ const state = {
     }
 
     function setupStep(step){
-      if(step===2){ generateCalendar(); updateSelectedDatesDisplay(); updateCalendarSubtitle(); refreshApplyAllUI(); }
-      else if(step===3){
+      if(step===2){ generateCalendar(); updateSelectedDatesSummary(); updateCalendarSubtitle(); }
+      else if(step===3){ updateSelectedDatesDisplay(); refreshApplyAllUI(); updateNextButton3(); }
+      else if(step===4){
         updateContactValidation();
         elements.startingAddressGroup.style.display = state.selectedService==='taxi' ? 'block' : 'none';
         elements.endingAddressGroup.style.display   = state.selectedService==='taxi' ? 'block' : 'none';
@@ -1346,7 +1585,7 @@ const state = {
       elements.houseSittingToggle.style.display = service==='housesitting' ? 'flex' : 'none';
       elements.houseSittingNote.style.display   = service==='housesitting' ? 'block' : 'none';
       if(service!=='housesitting'){ const care=document.getElementById('care24Hour'); if(care) care.checked=false; state.is24HourCare=false; }
-      updateNextButton1(); generateCalendar(); updateSelectedDatesDisplay(); updateNextButton2(); refreshApplyAllUI(); refreshApplyAllUI(); refreshApplyAllUI();
+      updateNextButton1(); generateCalendar(); updateSelectedDatesSummary(); updateNextButton2(); refreshApplyAllUI(); refreshApplyAllUI(); refreshApplyAllUI();
     }
 
     function update24HourCare(checked){ state.is24HourCare=checked; }
@@ -1430,13 +1669,14 @@ const state = {
         alert('For house sitting, please select consecutive dates.');
         state.selectedDates.splice(-1,1); delete state.dateTimes[dateStr];
       }
-      generateCalendar(); updateSelectedDatesDisplay(); updateNextButton2(); refreshApplyAllUI(); refreshApplyAllUI();
+      generateCalendar(); updateSelectedDatesSummary(); updateNextButton2(); refreshApplyAllUI(); refreshApplyAllUI();
     }
 
     // Safe DOM build to avoid template literal parsing errors
     function updateSelectedDatesDisplay(){
       elements.selectedDatesContainer.style.display = state.selectedDates.length===0 ? 'none' : 'block';
       elements.selectedDateCountNum.textContent = state.selectedDates.length;
+      if(elements.selectedDateCountNum2) elements.selectedDateCountNum2.textContent = state.selectedDates.length;
       elements.selectedDatesList.innerHTML='';
       let displayDates = state.selectedDates;
       if(state.selectedService==='housesitting' && state.selectedDates.length>=3){ displayDates=[state.selectedDates[0], state.selectedDates[state.selectedDates.length-1]]; }
@@ -1502,7 +1742,7 @@ const state = {
     function removeDate(index){
       const dateStr=normalizeDate(state.selectedDates[index]);
       state.selectedDates.splice(index,1); delete state.dateTimes[dateStr];
-      generateCalendar(); updateSelectedDatesDisplay(); updateNextButton2(); refreshApplyAllUI(); refreshApplyAllUI();
+      generateCalendar(); updateSelectedDatesSummary(); updateNextButton2(); refreshApplyAllUI(); refreshApplyAllUI();
     }
 
     function openTimeModal(dateStr){
@@ -1565,7 +1805,7 @@ const state = {
         if (doneBtn) {
           doneBtn.onclick = ()=>{
             if (typeof updateSelectedDatesDisplay === 'function') updateSelectedDatesDisplay();
-            if (typeof updateNextButton2 === 'function') updateNextButton2();
+            if (typeof updateNextButton3 === 'function') updateNextButton3();
             if (typeof refreshApplyAllUI === 'function') refreshApplyAllUI();
             mount.innerHTML = "";
           };
@@ -1579,7 +1819,7 @@ const state = {
       state.currentModalDate=null; 
       state.editingTimeIndex=null; 
       updateSelectedDatesDisplay(); 
-      updateNextButton2(); 
+      updateNextButton3(); 
       refreshApplyAllUI(); 
     }
 
@@ -1589,19 +1829,36 @@ const state = {
     function formatTime(timeStr){ const [hour,minute]=timeStr.split(':'); let hour12=parseInt(hour,10)%12 || 12; const period=parseInt(hour,10)>=12?'PM':'AM'; return (hour12.toString().padStart(2,'0'))+':'+minute+' '+period; }
     function updateCalendarSubtitle(){
       elements.calendarSubtitle.textContent = state.selectedService==='housesitting'
-        ? 'Tap start and end dates and choose exactly one time for each.'
-        : 'Tap dates to select/deselect. Tap + to choose times.';
+        ? 'Tap start and end dates. Times will be selected in the next step.'
+        : 'Tap dates to select/deselect. Times will be selected in the next step.';
     }
     function updateNextButton2(){
+      if(!elements.nextBtn2) return;
+      
+      let shouldEnable = false;
+      
+      if(state.selectedService==='housesitting'){
+        shouldEnable = state.selectedDates.length>=2 && (state.selectedDates[state.selectedDates.length-1] > state.selectedDates[0]);
+      } else {
+        shouldEnable = state.selectedDates.length>0;
+      }
+      
+      elements.nextBtn2.disabled = !shouldEnable;
+      elements.nextBtn2.setAttribute('aria-disabled', String(!shouldEnable));
+      elements.nextBtn2.classList.toggle('is-disabled', !shouldEnable);
+      elements.nextBtn2.style.pointerEvents = shouldEnable ? 'auto' : 'none';
+      elements.nextBtn2.style.opacity = shouldEnable ? '' : '.6';
+    }
+    function updateNextButton3(){
       if(state.selectedService==='housesitting'){
         const startDateStr = state.selectedDates[0] ? normalizeDate(state.selectedDates[0]) : null;
         const endDateStr   = state.selectedDates[state.selectedDates.length-1] ? normalizeDate(state.selectedDates[state.selectedDates.length-1]) : null;
         const hasStart = !!(startDateStr && state.dateTimes[startDateStr] && state.dateTimes[startDateStr].length===1);
         const hasEnd   = !!(endDateStr && state.dateTimes[endDateStr] && state.dateTimes[endDateStr].length===1);
-        elements.nextBtn2.disabled = !(state.selectedDates.length>=2 && (state.selectedDates[state.selectedDates.length-1] > state.selectedDates[0]) && hasStart && hasEnd);
+        elements.nextBtn3.disabled = !(state.selectedDates.length>=2 && (state.selectedDates[state.selectedDates.length-1] > state.selectedDates[0]) && hasStart && hasEnd);
       } else {
         const firstDateStr = state.selectedDates[0] ? normalizeDate(state.selectedDates[0]) : null;
-        elements.nextBtn2.disabled = !(state.selectedDates.length>0 && (state.dateTimes[firstDateStr] && state.dateTimes[firstDateStr].length>0));
+        elements.nextBtn3.disabled = !(state.selectedDates.length>0 && (state.dateTimes[firstDateStr] && state.dateTimes[firstDateStr].length>0));
       }
     }
 
@@ -1619,8 +1876,43 @@ const state = {
 
     function startNewBooking(){ resetForm(); nextStep(1); }
 
+    function updateSelectedDatesSummary(){
+      const summaryContainer = document.getElementById('selectedDatesSummary');
+      const summaryList = document.getElementById('selectedDatesSummaryList');
+      const countElement = document.getElementById('selectedDateCountNum');
+      
+      if(!summaryContainer || !summaryList || !countElement) return;
+      
+      countElement.textContent = state.selectedDates.length;
+      
+      if(state.selectedDates.length === 0){
+        summaryContainer.style.display = 'none';
+        return;
+      }
+      
+      summaryContainer.style.display = 'block';
+      summaryList.innerHTML = '';
+      
+      state.selectedDates.forEach(date => {
+        const dateStr = normalizeDate(date);
+        const dateObj = new Date(date);
+        const formattedDate = dateObj.toLocaleDateString('en-US', { 
+          weekday: 'short', 
+          month: 'short', 
+          day: 'numeric' 
+        });
+        
+        const dateItem = document.createElement('div');
+        dateItem.className = 'selected-date-item';
+        dateItem.innerHTML = `
+          <div class="selected-date-text">${formattedDate}</div>
+        `;
+        summaryList.appendChild(dateItem);
+      });
+    }
+
     function submitForm(){
-      if(!validateStep(3)) return;
+      if(!validateStep(4)) return;
       const totalPets=Object.values(state.petCounts).reduce((a,b)=>a+b,0);
       const formData={
         service: state.selectedService,
@@ -1649,9 +1941,9 @@ const state = {
         timestamp: new Date().toISOString()
       };
       console.log('Booking Data:', formData);
-      elements.steps[2].classList.remove('active');
-      elements.steps[3].classList.add('active');
-      state.currentStep=4;
+        elements.steps[3].classList.remove('active');
+        elements.steps[4].classList.add('active');
+        state.currentStep=5;
     }
 
     function resetForm(){
@@ -1869,29 +2161,8 @@ const state = {
     }catch(_){ return String(x); }
   }
 
-  function isReadyForNext(){
-    const sel = (window.state && state.selectedDates) || [];
-    if (!sel.length) return false;
-    const firstKey = normalizeKey(sel.slice().sort((a,b)=>a-b)[0]);
-    const arr = (state.dateTimes && state.dateTimes[firstKey]) || [];
-    return arr.length >= 1;
-  }
 
-  function setNextEnabled(ready){
-    const btn = document.getElementById('nextBtn2') || document.querySelector('[data-wf-action="next"][onclick*="nextStep(3)"]');
-    if (!btn) return;
-    btn.disabled = !ready;
-    btn.setAttribute('aria-disabled', String(!ready));
-    btn.classList.toggle('is-disabled', !ready);
-    btn.style.pointerEvents = ready ? 'auto' : 'none';
-    btn.style.opacity = ready ? '' : '.6';
-  }
 
-  const _origUpdateNext2 = typeof window.updateNextButton2 === 'function' ? window.updateNextButton2 : null;
-  window.updateNextButton2 = function(){
-    try{ _origUpdateNext2 && _origUpdateNext2(); }catch(_){}
-    setNextEnabled(isReadyForNext());
-  };
 
   const _origValidateStep = typeof window.validateStep === 'function' ? window.validateStep : null;
   if (_origValidateStep){
@@ -1899,9 +2170,7 @@ const state = {
       if (step === 2){
         const sel = (state.selectedDates||[]);
         if (!sel.length){ alert('Please select at least one date'); return false; }
-        const firstKey = normalizeKey(sel.slice().sort((a,b)=>a-b)[0]);
-        const arr = (state.dateTimes && state.dateTimes[firstKey]) || [];
-        if (!arr.length){ alert('Please select at least one time for the first date'); return false; }
+        // For step 2 (calendar page), only check dates, not times
         return true;
       }
       return _origValidateStep(step);
@@ -1939,7 +2208,7 @@ const state = {
                 li.style.display = (id === firstKey || id === lastKey) ? '' : 'none';
               });
             }
-            setNextEnabled(isReadyForNext());
+            // Button state will be updated by updateNextButton2 calls
           }, 0);
         }, true);
       }catch(_){}
@@ -1982,15 +2251,15 @@ const state = {
         e.target.closest('.tp-chip') ||
         e.target.closest('.add-times-btn')){
       setTimeout(()=>{
-        if (typeof window.updateNextButton2 === 'function') window.updateNextButton2();
-        else setNextEnabled(isReadyForNext());
+        // Button state will be updated by updateNextButton2 calls
+        // Button state will be updated by updateNextButton2 calls
       }, 0);
     }
   }, true);
 
   setTimeout(()=>{
     if (typeof window.updateNextButton2 === 'function') window.updateNextButton2();
-    else setNextEnabled(isReadyForNext());
+    // Button state will be updated by updateNextButton2 calls
   }, 0);
 
 })();
@@ -2485,7 +2754,7 @@ const state = {
 
     state.dateTimes[dateId] = isBoundary ? list.slice(0, 2) : list;
     // Re-run whatever enables Next in your build
-    try { typeof updateNextButton2 === 'function' && updateNextButton2(); } catch(_){}
+    try { typeof updateNextButton3 === 'function' && updateNextButton3(); } catch(_){}
   }
 
   // 1) Intercept the "+" click BEFORE the old handler runs
@@ -2624,7 +2893,7 @@ const state = {
     state.dateTimes[dateKey] = list;
     renderSummary(dateKey);
 
-    try { typeof updateNextButton2 === 'function' && updateNextButton2(); } catch(_){}
+    try { typeof updateNextButton3 === 'function' && updateNextButton3(); } catch(_){}
   }
 
   // Track the currently open slot & date so we can close on outside click
@@ -2793,7 +3062,7 @@ const state = {
     setTimeout(()=>{
       enforceDefault30(card);
       if (OPEN_DATE) updateSummary(OPEN_DATE);
-      try { typeof updateNextButton2 === 'function' && updateNextButton2(); } catch(_){}
+      try { typeof updateNextButton3 === 'function' && updateNextButton3(); } catch(_){}
     }, 0);
   }, true);
 
@@ -2904,7 +3173,7 @@ const state = {
         }
       }
     }
-    try { typeof updateNextButton2 === 'function' && updateNextButton2(); } catch(_){}
+    try { typeof updateNextButton3 === 'function' && updateNextButton3(); } catch(_){}
   }
 
   // Default 30m on plain row click (no chip)
@@ -3089,7 +3358,7 @@ const state = {
         line.textContent = arrCapped.length ? arrCapped.map(x => `${fmt(x.time)} ${(x.duration ?? 30)}m`).join(', ') : 'No times selected';
       }
     }
-    try { typeof updateNextButton2 === 'function' && updateNextButton2(); } catch(_){}
+    try { typeof updateNextButton3 === 'function' && updateNextButton3(); } catch(_){}
   }
 
   // --- track open picker to support outside-close ---
@@ -3277,7 +3546,7 @@ const state = {
       line.textContent = finalArr.length ? finalArr.map(x => `${fmt(x.time)} ${x.duration||30}m`).join(', ') : 'No times selected';
     }
 
-    try { typeof updateNextButton2 === 'function' && updateNextButton2(); } catch(_){}
+    try { typeof updateNextButton3 === 'function' && updateNextButton3(); } catch(_){}
   }
 
   // remember current open picker so outside-click can close it
@@ -3445,7 +3714,7 @@ const state = {
     const hidden = document.querySelector('input[name="selected_times"], input[name="times_json"], #selectedTimesJSON');
     if (hidden){ try { hidden.value = JSON.stringify(state.dateTimes); } catch(_){} }
 
-    try { typeof updateNextButton2 === 'function' && updateNextButton2(); } catch(_){}
+    try { typeof updateNextButton3 === 'function' && updateNextButton3(); } catch(_){}
   }
 
   // Close the inline picker under a given card
@@ -3606,7 +3875,7 @@ const state = {
     // Optional hidden field mirror
     const hidden = document.querySelector('input[name="selected_times"], input[name="times_json"], #selectedTimesJSON');
     if (hidden){ try { hidden.value = JSON.stringify(state.dateTimes); } catch(_){ } }
-    try { typeof updateNextButton2 === 'function' && updateNextButton2(); } catch(_){}
+    try { typeof updateNextButton3 === 'function' && updateNextButton3(); } catch(_){}
   }
 
   function restoreFromSaved(dateKey){
@@ -4180,7 +4449,7 @@ const state = {
   // Webflow interaction redraws can detach listeners. Nudge our existing logic to re-check.
   const poke = ()=> {
     try { typeof updateSelectedDatesDisplay === 'function' && updateSelectedDatesDisplay(); } catch(_){}
-    try { typeof updateNextButton2 === 'function' && updateNextButton2(); } catch(_){}
+    try { typeof updateNextButton3 === 'function' && updateNextButton3(); } catch(_){}
   };
   ['snout:reset','DOMContentLoaded','readystatechange'].forEach(evt=>{
     document.addEventListener(evt, poke, true);
@@ -4401,6 +4670,7 @@ const state = {
   document.addEventListener('DOMContentLoaded', updateApplyAllVisibility);
 })();
 </script>
+
 <script>
 ;(() => {
   if (window.__snoutEditTimesPersistPatch) return;
@@ -4507,7 +4777,7 @@ const state = {
   }, true);
 
 })();
-</script><script id="snout-build-manifest" type="application/json">{
+</script><script type="application/json" id="snout-build-manifest">{
   "project": "Snout Booking Form",
   "build": "unified-clean-v2",
   "timestamp": "2025-10-02T16:20:19.960968",
@@ -4564,6 +4834,7 @@ const state = {
     }
   ]
 }</script>
+
 <script>
 ;(()=>{
   window.SB = window.SB || { state: {} };
@@ -4586,6 +4857,7 @@ const state = {
   };
 })();
 </script>
+
 <script>
 ;(()=>{
   // Ensure tweak registry exists
@@ -4640,6 +4912,7 @@ const state = {
 })();
 </script>
 
+<!-- HARDENING PATCH START: Nonnegotiable Rules Enforcement -->
 <script>
 ;(()=>{
   if (window.__snoutHardeningPatch) return;
@@ -4727,7 +5000,7 @@ const state = {
     try { typeof generateCalendar === 'function' && generateCalendar(); } catch(_){}
     try { typeof updateSelectedDatesDisplay === 'function' && updateSelectedDatesDisplay(); } catch(_){}
     try { typeof updateCalendarSubtitle === 'function' && updateCalendarSubtitle(); } catch(_){}
-    try { typeof updateNextButton2 === 'function' && updateNextButton2(); } catch(_){}
+    try { typeof updateNextButton3 === 'function' && updateNextButton3(); } catch(_){}
 
     // Visual cue (non-blocking)
     try {
@@ -4788,7 +5061,8 @@ const state = {
   enforceAll();
 })();
 </script>
-
+<!-- HARDENING PATCH END -->
+<!-- SOFT ERROR REMINDER TOAST (2.5s) -->
 <style>
   /* Uses existing CSS variables to match house-sitting pink */
   #snout-toast {
@@ -4898,6 +5172,8 @@ const state = {
   };
 })();
 </script>
+<!-- SOFT ERROR REMINDER TOAST END -->
+
 
 <script>
 (function(){
@@ -4905,7 +5181,7 @@ const state = {
   function setVh(){ var vh = window.innerHeight * 0.01; document.documentElement.style.setProperty('--snout-vh', vh + 'px'); }
   setVh(); window.addEventListener('resize', setVh); window.addEventListener('orientationchange', function(){ setTimeout(setVh, 250); });
 
-  /* smooth pet dropdown: compute available height on open */
+  /* smooth pet dropdown: keep fixed height for scroll wheel */
   var ORIG_TOGGLE = window.togglePetPanel || null;
   window.togglePetPanel = function(force){
     if (typeof ORIG_TOGGLE === 'function') ORIG_TOGGLE(force);
@@ -4913,11 +5189,10 @@ const state = {
       var panel = document.getElementById('petPanel');
       var trigger = document.querySelector('.pet-dropdown-trigger');
       if (!panel || !trigger) return;
+      // Keep fixed height for scroll wheel functionality
       if (panel.classList.contains('active')){
-        var rect = trigger.getBoundingClientRect();
-        var available = Math.max(200, window.innerHeight - rect.bottom - 12);
-        panel.style.maxHeight = available + 'px';
-        panel.style.overflowY = 'auto';
+        panel.style.height = '150px';
+        panel.style.overflow = 'hidden';
       }
     }catch(_){}
   };
@@ -4973,10 +5248,8 @@ const state = {
     // refresh next enabled state
     setTimeout(function(){
       try{
-        if (typeof window.updateNextButton2 === 'function') window.updateNextButton2();
-        else if (typeof window.isReadyForNext === 'function' && typeof window.setNextEnabled === 'function'){
-          window.setNextEnabled(window.isReadyForNext());
-        }
+        // Button state will be updated by updateNextButton2 calls
+        // Button state will be updated by updateNextButton2 calls
       }catch(_){}
     }, 0);
   }
@@ -4988,11 +5261,19 @@ const state = {
     if (!modal || !modal.classList.contains('active')) return;
     if (e.target === modal){ e.preventDefault(); e.stopImmediatePropagation && e.stopImmediatePropagation(); closeOverlayImmediate(); }
   }, true);
-  document.addEventListener('click', function(e){
-    var modal = document.getElementById('timeModal');
-    if (!modal || !modal.classList.contains('active')) return;
-    if (e.target === modal){ e.preventDefault(); e.stopImmediatePropagation && e.stopImmediatePropagation(); closeOverlayImmediate(); }
-  }, true);
+  
+document.addEventListener('click', function(e){
+  var modal = document.getElementById('timeModal');
+  if (!modal || !modal.classList.contains('active')) return;
+  var panel = modal.querySelector('.time-modal-content');
+  if (!panel || !panel.contains(e.target)){
+    e.preventDefault();
+    if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+    if (typeof closeOverlayImmediate === 'function') closeOverlayImmediate();
+    else if (typeof closeTimeModal === 'function') closeTimeModal();
+  }
+}, true);
+
 
   /* Done closes instantly at capture */
   document.addEventListener('pointerdown', function(e){
@@ -5010,6 +5291,89 @@ const state = {
     }
   }, true);
 })();
+
+/* === Single-overlay modal control (no background click-through, single tap to close) === */
+(function(){
+  const overlay = document.getElementById('timeModal');
+  const panel   = overlay ? overlay.querySelector('.time-modal-content') : null;
+  const appRoot = elements.bookingContainer || document.querySelector('.booking-container');
+  let pushedForModal = false;
+
+  // Open
+  window.openTimeModal = function() {
+    if (!overlay || !panel) return;
+    overlay.classList.add('active');
+    document.body.classList.add('modal-open','overlay-open');
+
+    // disable background
+    if (appRoot) {
+      appRoot.setAttribute('inert','');
+      appRoot.classList.add('app-inert');
+      appRoot.setAttribute('aria-hidden','true');
+    }
+
+    // history: one Back press closes modal
+    if (!pushedForModal) {
+      try{ history.pushState({ timeModal:true }, ''); pushedForModal = true; }catch(e){}
+    }
+
+    // focus
+    try{ panel.focus(); }catch(e){}
+  };
+
+  // Close
+  window.closeTimeModal = function() {
+    if (!overlay || !panel) return;
+    overlay.classList.remove('active');
+    document.body.classList.remove('modal-open','overlay-open');
+
+    if (appRoot) {
+      appRoot.removeAttribute('inert');
+      appRoot.classList.remove('app-inert');
+      appRoot.removeAttribute('aria-hidden');
+    }
+
+    // keep history sane; do not call history.back() here
+    pushedForModal = false;
+  };
+
+  if (overlay) {
+    // One tap on dim area closes. Never leaks to page.
+    overlay.addEventListener('click', function(e){
+      if (!panel) return;
+      if (e.target === overlay) { e.preventDefault(); e.stopPropagation(); closeTimeModal(); }
+    });
+
+    // Taps inside panel should not bubble to overlay
+    if (panel) {
+      panel.addEventListener('click', (e)=> e.stopPropagation());
+    }
+
+    // iOS/Android: block touch bleed-through and scroll underlay
+    ['touchstart','touchmove','pointerdown'].forEach(evt => {
+      overlay.addEventListener(evt, (e)=>{
+        if (e.target === overlay) { e.preventDefault(); e.stopPropagation(); }
+      }, { passive:false });
+    });
+
+    // Global capture guard outside panel while open
+    document.addEventListener('pointerdown', (e)=>{
+      if (!overlay.classList.contains('active')) return;
+      if (!panel.contains(e.target)) { e.stopPropagation(); e.preventDefault(); }
+    }, true);
+  }
+
+  // Device/browser Back closes modal first
+  window.addEventListener('popstate', (e)=>{
+    if (overlay && overlay.classList.contains('active')) {
+      closeTimeModal();
+      // optional: re-push a clean state so further Back navigates normally
+      try{ history.pushState({}, ''); }catch(err){}
+    }
+  });
+})();
+
 </script>
+
 </body>
 </html>
