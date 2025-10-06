@@ -1,11 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Snout Pet Care - Booking Component</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Snout Pet Care - Booking Component</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
+<style>
     :root { --primary-bg:#fce1ef; --primary-text:#432f21; --border-color:#e2e8f0; --accent-bg:#f8fafc; --selected-bg:#432f21; --white:#fff; --btn-size:44px; --font-size-base:14px; --font-size-title:18px; }
     *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
     body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background-color:var(--primary-bg);color:var(--primary-text);line-height:1.5;overscroll-behavior:none}
@@ -618,7 +619,6 @@ body.overlay-open #timeModal{display:flex !important;}
 <style>/* Hide bottom hint only for House Sitting */
 .is-housesitting .tp-foot { display: none !important; }
 </style>
-
 <style>
 :root { --snout-vh: 1vh; }
 
@@ -724,26 +724,34 @@ body.overlay-open #timeModal{display:flex !important;}
     transition: all 0.2s ease !important;
     background: var(--white) !important;
     color: var(--primary-text) !important;
-  }
-  .calendar-day:active { transform: scale(0.98) !important; }
-  .calendar-day:not(.selected):not(.today):not(.disabled) {
-    background: var(--white) !important;
     border-color: var(--border-color) !important;
   }
-  .calendar-day:nth-child(6),
-  .calendar-day:nth-child(7n+6),
-  .calendar-day[data-day="6"] {
-    background: var(--white) !important;
-    color: var(--primary-text) !important;
+  .calendar-day:active { transform: scale(0.98) !important; }
+  .calendar-day.selected {
+    background: var(--selected-bg) !important;
+    color: #fff !important;
+    border-color: var(--primary-text) !important;
+    box-shadow: 0 2px 8px rgba(67,47,33,.2) !important;
+  }
+  .calendar-day.today {
+    border-color: var(--primary-text) !important;
+    font-weight: 600 !important;
+    background: var(--primary-bg) !important;
+  }
+  .calendar-day.disabled {
+    opacity: .4 !important;
+    cursor: not-allowed !important;
+    background: var(--border-color) !important;
     border-color: var(--border-color) !important;
   }
   
   /* === SELECTED DATES === */
   .selected-dates-container { margin-top: 10px !important; padding: 12px !important; }
   .selected-dates-list {
-    max-height: 50vh !important;
+    max-height: 200px !important;
     -webkit-overflow-scrolling: touch !important;
     overscroll-behavior: contain !important;
+    overflow-y: auto !important;
   }
   .selected-date-item {
     padding: 10px !important;
@@ -803,20 +811,34 @@ body.overlay-open #timeModal{display:flex !important;}
   .time-slots-grid {
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)) !important;
     gap: 6px !important;
+    justify-items: center !important;
   }
   .time-slot {
     padding: 10px !important;
     font-size: 13px !important;
     min-height: 44px !important;
+    text-align: center !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
   }
   
   /* === MODALS === */
-  .time-modal { padding: 16px !important; }
+  .time-modal { 
+    padding: 16px !important; 
+    align-items: flex-start !important;
+    padding-top: 20px !important;
+  }
   .time-modal-content {
     max-height: 80vh !important;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch !important;
     overscroll-behavior: contain !important;
+    margin-top: 0 !important;
+    transform: none !important;
+    position: relative !important;
+    top: 0 !important;
   }
   
   /* === INPUT PREVENTION === */
@@ -921,8 +943,6 @@ body.overlay-open #timeModal{display:flex !important;}
 /* Webflow-specific mobile optimizations */
 /* Mobile styles consolidated above - no duplicates needed */
 </style>
-
-
 <style>
 /* CLEAN-FINAL v2: Bigger mobile calendar and 5-row times list */
 
@@ -941,167 +961,156 @@ body.overlay-open #timeModal{display:flex !important;}
   }
 }
 </style>
-
 </head>
 <body>
-  <div class="booking-container" data-wf-form="booking">
-    <div class="booking-content">
-      <div id="step1" class="form-section active" data-step="1">
-        <div class="section-header"><div><h2 class="section-title">Choose Your Service</h2></div></div>
-        <div class="service-grid">
-          <div class="service-card" data-service="dropins" onclick="selectService(this, 'dropins')"><div class="service-icon"><i class="fas fa-home"></i></div><div class="service-name">Drop-Ins</div></div>
-          <div class="service-card" data-service="housesitting" onclick="selectService(this, 'housesitting')"><div class="service-icon"><i class="fas fa-couch"></i></div><div class="service-name">House Sitting</div></div>
-          <div class="service-card" data-service="walks" onclick="selectService(this, 'walks')"><div class="service-icon"><i class="fas fa-dog"></i></div><div class="service-name">Walks</div></div>
-          <div class="service-card" data-service="taxi" onclick="selectService(this, 'taxi')"><div class="service-icon"><i class="fas fa-car"></i></div><div class="service-name">Pet Taxi</div></div>
-        </div>
-        <div class="pet-section" id="petSection" style="display:none;">
-          <div class="pet-section-header"><h3 class="pet-section-title">Your Pets</h3></div>
-          <div class="pet-dropdown">
-            <div class="pet-dropdown-trigger" onclick="togglePetPanel()"><span id="petTriggerText">Select your pets</span><i class="fas fa-chevron-down" id="petChevron"></i></div>
-            <div class="pet-dropdown-panel" id="petPanel">
-              <div class="pet-wheel">
-                <div class="pet-type-row"><span class="pet-type-name">Dog</span><div class="pet-counter" data-type="dog"><button class="pet-counter-btn" onclick="updatePetCount('dog', -1)">−</button><input class="pet-counter-input" value="0" readonly /><button class="pet-counter-btn" onclick="updatePetCount('dog', 1)">+</button></div></div>
-                <div class="pet-type-row"><span class="pet-type-name">Cat</span><div class="pet-counter" data-type="cat"><button class="pet-counter-btn" onclick="updatePetCount('cat', -1)">−</button><input class="pet-counter-input" value="0" readonly /><button class="pet-counter-btn" onclick="updatePetCount('cat', 1)">+</button></div></div>
-                <div class="pet-type-row"><span class="pet-type-name">Bird</span><div class="pet-counter" data-type="bird"><button class="pet-counter-btn" onclick="updatePetCount('bird', -1)">−</button><input class="pet-counter-input" value="0" readonly /><button class="pet-counter-btn" onclick="updatePetCount('bird', 1)">+</button></div></div>
-                <div class="pet-type-row"><span class="pet-type-name">Farm Animal</span><div class="pet-counter" data-type="farm"><button class="pet-counter-btn" onclick="updatePetCount('farm', -1)">−</button><input class="pet-counter-input" value="0" readonly /><button class="pet-counter-btn" onclick="updatePetCount('farm', 1)">+</button></div></div>
-                <div class="pet-type-row"><span class="pet-type-name">Reptile</span><div class="pet-counter" data-type="reptile"><button class="pet-counter-btn" onclick="updatePetCount('reptile', -1)">−</button><input class="pet-counter-input" value="0" readonly /><button class="pet-counter-btn" onclick="updatePetCount('reptile', 1)">+</button></div></div>
-                <div class="pet-type-row">
-                  <span class="pet-type-name">Other</span>
-                  <input class="pet-type-other-input" placeholder="Enter type (e.g., Fish)" id="customPetInput" oninput="debounce(handleCustomPetType, 300)(this.value)" />
-                  <div class="pet-counter" data-type="other"><button class="pet-counter-btn" onclick="updatePetCount('other', -1)">−</button><input class="pet-counter-input" value="0" readonly /><button class="pet-counter-btn" onclick="updatePetCount('other', 1)">+</button></div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="selected-pets-summary" id="petSummary"></div>
-        </div>
-        <div class="booking-type-grid" id="bookingTypeSection" style="display:none;">
-          <div class="type-card selected" data-type="one-time" onclick="selectType(this, 'one-time')"><div class="type-icon"><i class="fas fa-calendar-day"></i></div><div class="type-label">One Time</div></div>
-          <div class="type-card" data-type="weekly" onclick="selectType(this, 'weekly')"><div class="type-icon"><i class="fas fa-calendar-week"></i></div><div class="type-label">Weekly</div></div>
-          <div class="toggle-checkbox" id="houseSittingToggle" style="display:none;">
-            <input type="checkbox" id="care24Hour" onchange="update24HourCare(this.checked)" />
-            <label class="toggle-text" for="care24Hour">24-Hour Care</label>
-          </div>
-        </div>
-        <button class="btn btn-primary" onclick="nextStep(2)" id="nextBtn1" disabled data-wf-action="next"><i class="fas fa-arrow-right"></i> Next: Choose Dates</button>
-      </div>
-
-      <div id="step2" class="form-section" data-step="2">
-        <div class="section-header">
-          <div>
-            <h2 class="section-title">Select Your Dates</h2>
-            <p class="section-subtitle" id="calendarSubtitle">Tap dates to select/deselect. Tap + to choose times.</p>
-          </div>
-        </div>
-        <div class="calendar-container">
-          <div class="calendar-header">
-            <button class="calendar-nav" onclick="prevMonth()"><i class="fas fa-chevron-left"></i></button>
-            <div class="calendar-title" id="calendarTitle">Loading…</div>
-            <button class="calendar-nav" onclick="nextMonth()"><i class="fas fa-chevron-right"></i></button>
-          </div>
-          <div class="calendar-grid" id="calendarGrid">
-            <div class="calendar-header-day">Sun</div><div class="calendar-header-day">Mon</div><div class="calendar-header-day">Tue</div><div class="calendar-header-day">Wed</div><div class="calendar-header-day">Thu</div><div class="calendar-header-day">Fri</div><div class="calendar-header-day">Sat</div>
-          </div>
-        </div>
-        <div id="selectedDatesSummary" class="selected-dates-summary" style="display:none;">
-          <div class="selected-dates-header">
-            <div class="selected-dates-title">Selected Dates <span class="selected-date-count" id="selectedDateCountNum">0</span></div>
-          </div>
-          <div class="selected-dates-list" id="selectedDatesSummaryList"></div>
-        </div>
-        <button class="btn btn-secondary" onclick="prevStep(1)" data-wf-action="back"><i class="fas fa-arrow-left"></i> Back</button>
-        <button class="btn btn-primary" onclick="nextStep(3)" id="nextBtn2" disabled data-wf-action="next">Next: Select Times</button>
-      </div>
-
-      <div id="step3" class="form-section" data-step="3">
-        <div class="section-header">
-          <div><h2 class="section-title">Select Times for Your Dates</h2><p class="section-subtitle">Choose times for each selected date</p></div>
-        </div>
-        <div id="selectedDatesContainer" class="selected-dates-container">
-          <div class="selected-dates-header">
-            <div class="selected-dates-title">Selected Dates <span class="selected-date-count" id="selectedDateCountNum2">0</span></div>
-            <label id="applyAllContainer" class="apply-all-toggle" style="display:none;">
-              <input type="checkbox" id="applyAllToggle" role="switch" aria-checked="false" />
-              <span class="switch" aria-hidden="true"></span>
-              <span class="toggle-label">Apply to all dates</span>
-            </label>
-          </div>
-          <div class="selected-dates-list" id="selectedDatesList"></div>
-        </div>
-        <div id="houseSittingNote" class="house-sitting-note" style="display:none;">
-          <i class="fas fa-home"></i>
-          <p style="margin:0;">When booking <span class="hs-emph">house sitting</span>, select <span class="hs-emph">consecutive days</span>. Use the <span class="hs-emph">first day</span> to set the <span class="hs-emph">start time</span> and the <span class="hs-emph">last day</span> to set the <span class="hs-emph">end time</span>.</p>
-        </div>
-        <button class="btn btn-secondary" onclick="prevStep(2)" data-wf-action="back"><i class="fas fa-arrow-left"></i> Back</button>
-        <button class="btn btn-primary" onclick="nextStep(4)" id="nextBtn3" disabled data-wf-action="next">Next: Contact Info</button>
-      </div>
-
-      <div id="step4" class="form-section" data-step="4">
-        <div class="section-header">
-          <div><h2 class="section-title">Contact Information</h2><p class="section-subtitle">Final details to confirm your booking</p></div>
-        </div>
-        <div class="contact-grid" data-wf-form-section="contact">
-          <div class="contact-row">
-            <div class="contact-group"><label class="contact-label" for="firstName">First Name *</label><input type="text" class="contact-input" id="firstName" name="firstName" placeholder="John" required data-wf-field="firstName" autocomplete="given-name" /></div>
-            <div class="contact-group"><label class="contact-label" for="lastName">Last Name *</label><input type="text" class="contact-input" id="lastName" name="lastName" placeholder="Doe" required data-wf-field="lastName" autocomplete="family-name" /></div>
-          </div>
-          <div class="contact-row">
-            <div class="contact-group"><label class="contact-label" for="phone">Phone Number *</label><input type="tel" class="contact-input" id="phone" name="phone" placeholder="(123) 456-7890" required data-wf-field="phone" autocomplete="tel" /></div>
-            <div class="contact-group"><label class="contact-label" for="email">Email *</label><input type="email" class="contact-input" id="email" name="email" placeholder="you@example.com" required data-wf-field="email" autocomplete="email" /></div>
-          </div>
-          <div class="contact-group full-width" id="addressGroup"><label class="contact-label" for="address">Service Address *</label><textarea class="contact-input contact-textarea" id="address" name="address" placeholder="123 Main St, City, State 12345" required data-wf-field="address" autocomplete="street-address"></textarea></div>
-          <div class="contact-group full-width" id="startingAddressGroup" style="display:none;"><label class="contact-label" for="startingAddress">Starting Address *</label><textarea class="contact-input contact-textarea" id="startingAddress" name="startingAddress" placeholder="Starting address for pet taxi" required data-wf-field="startingAddress"></textarea></div>
-          <div class="contact-group full-width" id="endingAddressGroup" style="display:none;"><label class="contact-label" for="endingAddress">Ending Address *</label><textarea class="contact-input contact-textarea" id="endingAddress" name="endingAddress" placeholder="Destination address for pet taxi" required data-wf-field="endingAddress"></textarea></div>
-          <div class="contact-group full-width"><label class="contact-label" for="instructions">Additional Notes</label><textarea class="contact-input contact-textarea" id="instructions" name="instructions" placeholder="Any additional notes, questions, or preferred sitter..." data-wf-field="instructions"></textarea></div>
-        </div>
-        <div class="policy-checkbox">
-          <input type="checkbox" id="policyAgreement" name="policyAgreement" required data-wf-field="policyAgreement" />
-          <label class="policy-text" for="policyAgreement">I agree to Snout Services' booking policies, including deposits and cancellation windows, and I understand all requests must be submitted through this form.</label>
-        </div>
-        <button type="button" class="btn btn-primary" onclick="submitForm()" id="submitBtn" disabled data-wf-action="submit"><i class="fas fa-paper-plane"></i> Submit Booking</button>
-        <button type="button" class="btn btn-secondary" onclick="prevStep(3)" data-wf-action="back"><i class="fas fa-arrow-left"></i> Back</button>
-      </div>
-
-      <div id="step5" class="form-section" data-step="5">
-        <div class="section-header"><div class="section-icon"><i class="fas fa-check-circle"></i></div><div><h2 class="section-title">Booking received</h2></div></div>
-        <p class="confirmation-message">Your booking request has been submitted.<br />Thank you for booking with Snout Services!</p>
-        <button class="btn btn-primary" onclick="startNewBooking()" data-wf-action="reset"><i class="fas fa-plus"></i> Start New Booking</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="timeModal" class="time-modal">
-    <div class="time-modal-content">
-      <div class="time-modal-header">
-        <h3 class="time-modal-title" id="modalDateTitle">Select Times</h3>
-        <button class="time-modal-close" onclick="closeTimeModal()"><i class="fas fa-times"></i></button>
-      </div>
-      <div class="time-modal-date"><div class="time-modal-date-text" id="modalDateDisplay"></div></div>
-      <div class="time-slots-container" id="timeSlotsContainer"><div id="snoutWheelMount"></div></div>
-      <div class="time-picker-slot"></div>
-      <div class="time-modal-actions"><button class="btn btn-secondary btn-small" onclick="closeTimeModal()" data-wf-action="close-modal">Done</button></div>
-    </div>
-  </div>
-
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
-
-  <template id="timePickerTemplate">
-    <div class="tp-card" role="dialog" aria-label="Select Times">
-      <div class="tp-head">
-        <div class="tp-title">Select Times</div>
-        <button type="button" class="tp-done">Done</button>
-      </div>
-
-      <div class="tp-list">
-        <!-- Build 5:00 AM → 10:30 PM in JS -->
-      </div>
-
-      <div class="tp-foot">
-        <div class="tp-empty">No times yet. Tap a time to add. 30m by default.</div>
-      </div>
-    </div>
-  </template>
-
+<div class="booking-container" data-wf-form="booking">
+<div class="booking-content">
+<div class="form-section active" data-step="1" id="step1">
+<div class="section-header"><div><h2 class="section-title">Choose Your Service</h2></div></div>
+<div class="service-grid">
+<div class="service-card" data-service="dropins" onclick="selectService(this, 'dropins')"><div class="service-icon"><i class="fas fa-home"></i></div><div class="service-name">Drop-Ins</div></div>
+<div class="service-card" data-service="housesitting" onclick="selectService(this, 'housesitting')"><div class="service-icon"><i class="fas fa-couch"></i></div><div class="service-name">House Sitting</div></div>
+<div class="service-card" data-service="walks" onclick="selectService(this, 'walks')"><div class="service-icon"><i class="fas fa-dog"></i></div><div class="service-name">Walks</div></div>
+<div class="service-card" data-service="taxi" onclick="selectService(this, 'taxi')"><div class="service-icon"><i class="fas fa-car"></i></div><div class="service-name">Pet Taxi</div></div>
+</div>
+<div class="pet-section" id="petSection" style="display:none;">
+<div class="pet-section-header"><h3 class="pet-section-title">Your Pets</h3></div>
+<div class="pet-dropdown">
+<div class="pet-dropdown-trigger" onclick="togglePetPanel()"><span id="petTriggerText">Select your pets</span><i class="fas fa-chevron-down" id="petChevron"></i></div>
+<div class="pet-dropdown-panel" id="petPanel">
+<div class="pet-wheel">
+<div class="pet-type-row"><span class="pet-type-name">Dog</span><div class="pet-counter" data-type="dog"><button class="pet-counter-btn" onclick="updatePetCount('dog', -1)">−</button><input class="pet-counter-input" readonly="" value="0"/><button class="pet-counter-btn" onclick="updatePetCount('dog', 1)">+</button></div></div>
+<div class="pet-type-row"><span class="pet-type-name">Cat</span><div class="pet-counter" data-type="cat"><button class="pet-counter-btn" onclick="updatePetCount('cat', -1)">−</button><input class="pet-counter-input" readonly="" value="0"/><button class="pet-counter-btn" onclick="updatePetCount('cat', 1)">+</button></div></div>
+<div class="pet-type-row"><span class="pet-type-name">Bird</span><div class="pet-counter" data-type="bird"><button class="pet-counter-btn" onclick="updatePetCount('bird', -1)">−</button><input class="pet-counter-input" readonly="" value="0"/><button class="pet-counter-btn" onclick="updatePetCount('bird', 1)">+</button></div></div>
+<div class="pet-type-row"><span class="pet-type-name">Farm Animal</span><div class="pet-counter" data-type="farm"><button class="pet-counter-btn" onclick="updatePetCount('farm', -1)">−</button><input class="pet-counter-input" readonly="" value="0"/><button class="pet-counter-btn" onclick="updatePetCount('farm', 1)">+</button></div></div>
+<div class="pet-type-row"><span class="pet-type-name">Reptile</span><div class="pet-counter" data-type="reptile"><button class="pet-counter-btn" onclick="updatePetCount('reptile', -1)">−</button><input class="pet-counter-input" readonly="" value="0"/><button class="pet-counter-btn" onclick="updatePetCount('reptile', 1)">+</button></div></div>
+<div class="pet-type-row">
+<span class="pet-type-name">Other</span>
+<input class="pet-type-other-input" id="customPetInput" oninput="debounce(handleCustomPetType, 300)(this.value)" placeholder="Enter type (e.g., Fish)"/>
+<div class="pet-counter" data-type="other"><button class="pet-counter-btn" onclick="updatePetCount('other', -1)">−</button><input class="pet-counter-input" readonly="" value="0"/><button class="pet-counter-btn" onclick="updatePetCount('other', 1)">+</button></div>
+</div>
+</div>
+</div>
+</div>
+<div class="selected-pets-summary" id="petSummary"></div>
+</div>
+<div class="booking-type-grid" id="bookingTypeSection" style="display:none;">
+<div class="type-card selected" data-type="one-time" onclick="selectType(this, 'one-time')"><div class="type-icon"><i class="fas fa-calendar-day"></i></div><div class="type-label">One Time</div></div>
+<div class="type-card" data-type="weekly" onclick="selectType(this, 'weekly')"><div class="type-icon"><i class="fas fa-calendar-week"></i></div><div class="type-label">Weekly</div></div>
+<div class="toggle-checkbox" id="houseSittingToggle" style="display:none;">
+<input id="care24Hour" onchange="update24HourCare(this.checked)" type="checkbox"/>
+<label class="toggle-text" for="care24Hour">24-Hour Care</label>
+</div>
+</div>
+<button class="btn btn-primary" data-wf-action="next" disabled="" id="nextBtn1" onclick="nextStep(2)"><i class="fas fa-arrow-right"></i> Next: Choose Dates</button>
+</div>
+<div class="form-section" data-step="2" id="step2">
+<div class="section-header">
+<div>
+<h2 class="section-title">Select Your Dates</h2>
+<p class="section-subtitle" id="calendarSubtitle">Tap dates to select/deselect. Tap + to choose times.</p>
+</div>
+</div>
+<div class="calendar-container">
+<div class="calendar-header">
+<button class="calendar-nav" onclick="prevMonth()"><i class="fas fa-chevron-left"></i></button>
+<div class="calendar-title" id="calendarTitle">Loading…</div>
+<button class="calendar-nav" onclick="nextMonth()"><i class="fas fa-chevron-right"></i></button>
+</div>
+<div class="calendar-grid" id="calendarGrid">
+<div class="calendar-header-day">Sun</div><div class="calendar-header-day">Mon</div><div class="calendar-header-day">Tue</div><div class="calendar-header-day">Wed</div><div class="calendar-header-day">Thu</div><div class="calendar-header-day">Fri</div><div class="calendar-header-day">Sat</div>
+</div>
+</div>
+<div class="selected-dates-summary" id="selectedDatesSummary" style="display:none;">
+<div class="selected-dates-header">
+<div class="selected-dates-title">Selected Dates <span class="selected-date-count" id="selectedDateCountNum">0</span></div>
+</div>
+<div class="selected-dates-list" id="selectedDatesSummaryList"></div>
+</div>
+<button class="btn btn-secondary" data-wf-action="back" onclick="prevStep(1)"><i class="fas fa-arrow-left"></i> Back</button>
+<button class="btn btn-primary" data-wf-action="next" disabled="" id="nextBtn2" onclick="nextStep(3)">Next: Select Times</button>
+</div>
+<div class="form-section" data-step="3" id="step3">
+<div class="section-header">
+<div><h2 class="section-title">Select Times for Your Dates</h2><p class="section-subtitle">Choose times for each selected date</p></div>
+</div>
+<div class="selected-dates-container" id="selectedDatesContainer">
+<div class="selected-dates-header">
+<div class="selected-dates-title">Selected Dates <span class="selected-date-count" id="selectedDateCountNum2">0</span></div>
+<label class="apply-all-toggle" id="applyAllContainer" style="display:none;">
+<input aria-checked="false" id="applyAllToggle" role="switch" type="checkbox"/>
+<span aria-hidden="true" class="switch"></span>
+<span class="toggle-label">Apply to all dates</span>
+</label>
+</div>
+<div class="selected-dates-list" id="selectedDatesList"></div>
+</div>
+<div class="house-sitting-note" id="houseSittingNote" style="display:none;">
+<i class="fas fa-home"></i>
+<p style="margin:0;">When booking <span class="hs-emph">house sitting</span>, select <span class="hs-emph">consecutive days</span>. Use the <span class="hs-emph">first day</span> to set the <span class="hs-emph">start time</span> and the <span class="hs-emph">last day</span> to set the <span class="hs-emph">end time</span>.</p>
+</div>
+<button class="btn btn-secondary" data-wf-action="back" onclick="prevStep(2)"><i class="fas fa-arrow-left"></i> Back</button>
+<button class="btn btn-primary" data-wf-action="next" disabled="" id="nextBtn3" onclick="nextStep(4)">Next: Contact Info</button>
+</div>
+<div class="form-section" data-step="4" id="step4">
+<div class="section-header">
+<div><h2 class="section-title">Contact Information</h2><p class="section-subtitle">Final details to confirm your booking</p></div>
+</div>
+<div class="contact-grid" data-wf-form-section="contact">
+<div class="contact-row">
+<div class="contact-group"><label class="contact-label" for="firstName">First Name *</label><input autocomplete="given-name" class="contact-input" data-wf-field="firstName" id="firstName" name="firstName" placeholder="John" required="" type="text"/></div>
+<div class="contact-group"><label class="contact-label" for="lastName">Last Name *</label><input autocomplete="family-name" class="contact-input" data-wf-field="lastName" id="lastName" name="lastName" placeholder="Doe" required="" type="text"/></div>
+</div>
+<div class="contact-row">
+<div class="contact-group"><label class="contact-label" for="phone">Phone Number *</label><input autocomplete="tel" class="contact-input" data-wf-field="phone" id="phone" name="phone" placeholder="(123) 456-7890" required="" type="tel"/></div>
+<div class="contact-group"><label class="contact-label" for="email">Email *</label><input autocomplete="email" class="contact-input" data-wf-field="email" id="email" name="email" placeholder="you@example.com" required="" type="email"/></div>
+</div>
+<div class="contact-group full-width" id="addressGroup"><label class="contact-label" for="address">Service Address *</label><textarea autocomplete="street-address" class="contact-input contact-textarea" data-wf-field="address" id="address" name="address" placeholder="123 Main St, City, State 12345" required=""></textarea></div>
+<div class="contact-group full-width" id="startingAddressGroup" style="display:none;"><label class="contact-label" for="startingAddress">Starting Address *</label><textarea class="contact-input contact-textarea" data-wf-field="startingAddress" id="startingAddress" name="startingAddress" placeholder="Starting address for pet taxi" required=""></textarea></div>
+<div class="contact-group full-width" id="endingAddressGroup" style="display:none;"><label class="contact-label" for="endingAddress">Ending Address *</label><textarea class="contact-input contact-textarea" data-wf-field="endingAddress" id="endingAddress" name="endingAddress" placeholder="Destination address for pet taxi" required=""></textarea></div>
+<div class="contact-group full-width"><label class="contact-label" for="instructions">Additional Notes</label><textarea class="contact-input contact-textarea" data-wf-field="instructions" id="instructions" name="instructions" placeholder="Any additional notes, questions, or preferred sitter..."></textarea></div>
+</div>
+<div class="policy-checkbox">
+<input data-wf-field="policyAgreement" id="policyAgreement" name="policyAgreement" required="" type="checkbox"/>
+<label class="policy-text" for="policyAgreement">I agree to Snout Services' booking policies, including deposits and cancellation windows, and I understand all requests must be submitted through this form.</label>
+</div>
+<button class="btn btn-primary" data-wf-action="submit" disabled="" id="submitBtn" onclick="submitForm()" type="button"><i class="fas fa-paper-plane"></i> Submit Booking</button>
+<button class="btn btn-secondary" data-wf-action="back" onclick="prevStep(3)" type="button"><i class="fas fa-arrow-left"></i> Back</button>
+</div>
+<div class="form-section" data-step="5" id="step5">
+<div class="section-header"><div class="section-icon"><i class="fas fa-check-circle"></i></div><div><h2 class="section-title">Booking received</h2></div></div>
+<p class="confirmation-message">Your booking request has been submitted.<br/>Thank you for booking with Snout Services!</p>
+<button class="btn btn-primary" data-wf-action="reset" onclick="startNewBooking()"><i class="fas fa-plus"></i> Start New Booking</button>
+</div>
+</div>
+</div>
+<div class="time-modal" id="timeModal">
+<div class="time-modal-content">
+<div class="time-modal-header">
+<h3 class="time-modal-title" id="modalDateTitle">Select Times</h3>
+<button class="time-modal-close" onclick="closeTimeModal()"><i class="fas fa-times"></i></button>
+</div>
+<div class="time-modal-date"><div class="time-modal-date-text" id="modalDateDisplay"></div></div>
+<div class="time-slots-container" id="timeSlotsContainer"><div id="snoutWheelMount"></div></div>
+<div class="time-picker-slot"></div>
+<div class="time-modal-actions"><button class="btn btn-secondary btn-small" data-wf-action="close-modal" onclick="closeTimeModal()">Done</button></div>
+</div>
+</div>
+<div aria-live="polite" class="toast" id="toast" role="status"></div>
+<template id="timePickerTemplate">
+<div aria-label="Select Times" class="tp-card" role="dialog">
+<div class="tp-head">
+<div class="tp-title">Select Times</div>
+<button class="tp-done" type="button">Done</button>
+</div>
+<div class="tp-list">
+<!-- Build 5:00 AM → 10:30 PM in JS -->
+</div>
+<div class="tp-foot">
+<div class="tp-empty">No times yet. Tap a time to add. 30m by default.</div>
+</div>
+</div>
+</template>
 <script>
 /* Unified Script Build: consolidated for maintainability. */
 const state = {
@@ -4670,7 +4679,6 @@ const state = {
   document.addEventListener('DOMContentLoaded', updateApplyAllVisibility);
 })();
 </script>
-
 <script>
 ;(() => {
   if (window.__snoutEditTimesPersistPatch) return;
@@ -4777,7 +4785,7 @@ const state = {
   }, true);
 
 })();
-</script><script type="application/json" id="snout-build-manifest">{
+</script><script id="snout-build-manifest" type="application/json">{
   "project": "Snout Booking Form",
   "build": "unified-clean-v2",
   "timestamp": "2025-10-02T16:20:19.960968",
@@ -4834,7 +4842,6 @@ const state = {
     }
   ]
 }</script>
-
 <script>
 ;(()=>{
   window.SB = window.SB || { state: {} };
@@ -4857,7 +4864,6 @@ const state = {
   };
 })();
 </script>
-
 <script>
 ;(()=>{
   // Ensure tweak registry exists
@@ -4911,7 +4917,6 @@ const state = {
   });
 })();
 </script>
-
 <!-- HARDENING PATCH START: Nonnegotiable Rules Enforcement -->
 <script>
 ;(()=>{
@@ -5173,8 +5178,6 @@ const state = {
 })();
 </script>
 <!-- SOFT ERROR REMINDER TOAST END -->
-
-
 <script>
 (function(){
   /* viewport unit fallback */
@@ -5374,6 +5377,16 @@ document.addEventListener('click', function(e){
 })();
 
 </script>
-
-</body>
+<script>(function () {
+  function send() {
+    var h = Math.max(
+      document.documentElement.scrollHeight,
+      document.body.scrollHeight
+    );
+    window.parent && window.parent.postMessage({ snoutHeight: h }, "*");
+  }
+  window.addEventListener("load", send);
+  if (window.ResizeObserver) new ResizeObserver(send).observe(document.body);
+  else setInterval(send, 500);
+})();</script></body>
 </html>
