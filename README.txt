@@ -1,1 +1,4 @@
-Render Static Site. Keep index.html at repo root. Publish directory: . Build command: (empty)
+Service type: Static Site
+Build command: 
+Publish directory: .
+index.html at repo root.
