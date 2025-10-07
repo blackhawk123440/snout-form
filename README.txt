@@ -1,4 +1,5 @@
-Service type: Static Site
+Render Static Site
+Service: Static Site
 Build command: 
 Publish directory: .
-index.html at repo root.
+index.html at repo root
