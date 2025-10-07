@@ -1,0 +1,792 @@
+
+    :root { --primary-bg:#fce1ef; --primary-text:#432f21; --border-color:#e2e8f0; --accent-bg:#f8fafc; --selected-bg:#432f21; --white:#fff; --btn-size:44px; --font-size-base:14px; --font-size-title:18px; }
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background-color:var(--primary-bg);color:var(--primary-text);line-height:1.5;overscroll-behavior:none}
+    .booking-container{max-width:100%;width:90vw;margin:10px auto;background:var(--white);border-radius:16px;box-shadow:0 8px 20px rgba(0,0,0,.1);overflow:hidden;transition:height .3s ease;height:auto}
+    .booking-content{padding:16px}
+    .form-section{display:none;animation:fadeIn .3s ease}
+    .form-section.active{display:block}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .section-header{display:flex;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border-color)}
+    .section-icon{width:40px;height:40px;border-radius:10px;background:var(--primary-bg);display:flex;align-items:center;justify-content:center;color:var(--primary-text);font-size:18px;margin-right:10px;flex-shrink:0}
+    .section-title{font-size:var(--font-size-title);font-weight:600;color:var(--primary-text)}
+    .section-subtitle{font-size:var(--font-size-base);font-weight:500;color:var(--primary-text);margin-top:4px}
+    .service-grid{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:12px}
+    .service-card{padding:12px;border:2px solid var(--border-color);border-radius:10px;text-align:center;cursor:pointer;transition:all .2s ease;background:var(--white);min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;touch-action:manipulation}
+    .service-card:active:not(.selected){border-color:var(--primary-text);transform:scale(.98);background:var(--primary-bg)}
+    .service-card.selected{border-color:var(--primary-text);background:var(--primary-bg)}
+    .service-icon{font-size:24px;color:var(--primary-text);margin-bottom:6px}
+    .service-name{font-size:13px;font-weight:600;color:var(--primary-text)}
+    .pet-section{background:var(--accent-bg);border-radius:12px;padding:0;margin-bottom:12px;border:1px solid var(--border-color);position:relative;overflow:visible;transition:height .3s ease}
+    .pet-section-header{padding:10px 12px;background:var(--white);border-bottom:1px solid var(--border-color);display:flex;align-items:center;justify-content:space-between}
+    .pet-section-title{font-size:var(--font-size-base);font-weight:600;color:var(--primary-text);display:flex;align-items:center;gap:6px}
+    .pet-dropdown{position:relative;width:calc(100% - 24px);margin:10px 12px 8px;z-index:20}
+    .pet-dropdown-trigger{padding:8px 12px;border:2px solid var(--border-color);border-radius:8px;background:var(--white);display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-size:var(--font-size-base);color:var(--primary-text);transition:all .2s ease;min-height:var(--btn-size);touch-action:manipulation}
+    .pet-dropdown-trigger:active{border-color:var(--primary-text);background:var(--primary-bg)}
+    .pet-dropdown-trigger.active{border-color:var(--primary-text);background:var(--primary-bg)}
+    .pet-dropdown-panel{position:absolute;background:var(--white);border:2px solid var(--primary-text);border-radius:8px;box-shadow:0 4px 12px rgba(67,47,33,.15);width:100%;display:none;top:calc(100% + 4px);height:150px;overflow:hidden;z-index:20}
+    .pet-dropdown-panel.active{display:block}
+    .pet-dropdown-panel .pet-wheel{height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:var(--accent-bg);-webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%);mask-image: linear-gradient(to bottom, transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%)}
+    .pet-dropdown-panel .pet-wheel::before, .pet-dropdown-panel .pet-wheel::after{content:""; position:absolute; left:0; right:0; height:18px; pointer-events:none; z-index:2}
+    .pet-dropdown-panel .pet-wheel::before{top:0; background:linear-gradient(to bottom, var(--accent-bg), rgba(248,250,252,0))}
+    .pet-dropdown-panel .pet-wheel::after{bottom:0; background:linear-gradient(to top, var(--accent-bg), rgba(248,250,252,0))}
+    .pet-dropdown-panel .pet-wheel::-webkit-scrollbar{width:6px}
+    .pet-dropdown-panel .pet-wheel::-webkit-scrollbar-thumb{background:rgba(0,0,0,.12); border-radius:8px}
+    .pet-type-row{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-bottom:1px solid var(--border-color);transition:all .2s ease;min-height:40px}
+    .pet-type-row:active{background:var(--accent-bg)}
+    .pet-type-row:last-child{border-bottom:none}
+    .pet-type-name{font-size:var(--font-size-base);color:var(--primary-text);font-weight:500}
+    .pet-type-other-input{border:1px solid var(--border-color);border-radius:4px;padding:4px 6px;font-size:11px;background:var(--accent-bg);width:100%;max-width:120px;height:24px}
+    .pet-type-other-input:focus{outline:none;border-color:var(--primary-text);background:var(--white);box-shadow:0 0 0 2px rgba(67,47,33,.1)}
+    .pet-counter{display:flex;align-items:center;gap:3px;background:var(--accent-bg);padding:3px;border-radius:6px;border:1px solid var(--border-color);min-width:70px}
+    .pet-counter-btn{width:28px;height:28px;border:none;border-radius:4px;background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--primary-text);font-weight:600;transition:all .2s ease;touch-action:manipulation}
+    .pet-counter-btn:active:not(:disabled){background:var(--primary-text);color:var(--white);transform:scale(.95)}
+    .pet-counter-btn:disabled{opacity:.3;cursor:not-allowed}
+    .pet-counter-input{width:24px;height:20px;border:none;text-align:center;font-size:12px;font-weight:700;background:transparent;color:var(--primary-text)}
+    .selected-pets-summary{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;padding:0 12px 12px;width:calc(100% - 24px);margin-left:12px}
+    .pet-chip{background:var(--primary-bg);color:var(--primary-text);padding:4px 8px;border-radius:12px;font-size:12px;font-weight:500;display:flex;align-items:center;gap:6px;border:1px solid var(--primary-text)}
+    .booking-type-grid{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:16px}
+    .type-card{padding:12px;border:2px solid var(--border-color);border-radius:10px;text-align:center;cursor:pointer;transition:all .2s ease;background:var(--white);touch-action:manipulation}
+    .type-card:active:not(.selected){border-color:var(--primary-text);background:var(--primary-bg);transform:scale(.98)}
+    .type-card.selected{border-color:var(--primary-text);background:var(--primary-bg)}
+    .type-icon{font-size:22px;color:var(--primary-text);margin-bottom:6px}
+    .type-label{font-size:var(--font-size-base);font-weight:600;color:var(--primary-text)}
+    .toggle-checkbox{display:flex;align-items:center;gap:8px;padding:10px;background:var(--accent-bg);border-radius:10px;border:1px solid var(--border-color);margin-top:10px}
+    .toggle-checkbox input[type=checkbox]{width:20px;height:20px;accent-color:var(--primary-text);flex-shrink:0}
+    .toggle-text{font-size:var(--font-size-base);color:var(--primary-text);font-weight:500}
+    .calendar-container{background:var(--accent-bg);border-radius:12px;padding:16px;margin-bottom:16px;border:1px solid var(--border-color)}
+    .calendar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+    .calendar-nav{background:none;border:none;font-size:18px;color:var(--primary-text);cursor:pointer;padding:8px;border-radius:8px;transition:all .2s ease;touch-action:manipulation;width:var(--btn-size);height:var(--btn-size)}
+    .calendar-nav:active{background:var(--border-color);transform:scale(.95)}
+    .calendar-title{font-size:var(--font-size-title);font-weight:600;color:var(--primary-text)}
+    .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+    .calendar-header-day{text-align:center;font-size:12px;font-weight:600;color:var(--primary-text);padding:6px}
+    .calendar-day{aspect-ratio:1;border:1px solid var(--border-color);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s ease;background:var(--white);color:var(--primary-text);touch-action:manipulation;min-height:var(--btn-size)}
+    .calendar-day:active:not(.disabled):not(.selected){border-color:var(--primary-text);background:var(--primary-bg);transform:scale(.95)}
+    .calendar-day.selected{border-color:var(--primary-text);background:var(--selected-bg);color:#fff}
+    .calendar-day.today{border-color:var(--primary-text);font-weight:600}
+    .calendar-day.disabled{opacity:.4;cursor:not-allowed;background:var(--border-color)}
+    .calendar-day.other-month{opacity:.3}
+    .selected-dates-container{margin-top:12px;padding:12px;background:#fff;border:1px solid var(--border-color);border-radius:10px}
+    .selected-dates-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+    .selected-dates-title{font-size:var(--font-size-base);font-weight:600;color:var(--primary-text);display:flex;align-items:center;gap:6px}
+    .selected-date-count{background:var(--selected-bg);color:#fff;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+    .selected-dates-list{display:flex;flex-direction:column;gap:8px;max-height:40vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+    .selected-date-item{display:flex;flex-direction:column;align-items:flex-start;padding:8px 10px;background:var(--accent-bg);border-radius:8px;border:1px solid var(--border-color)}
+    .selected-date-item:active{background:var(--border-color)}
+    .selected-date-info{flex:1;display:flex;flex-direction:column;gap:2px;width:100%}
+    .date-display{font-size:var(--font-size-base);font-weight:500;color:var(--primary-text)}
+    .times-display{font-size:12px;color:var(--primary-text)}
+    .no-times{font-style:italic;opacity:.7}
+    .add-times-btn{background:var(--primary-bg);color:var(--primary-text);border:1px solid var(--border-color);width:var(--btn-size);height:var(--btn-size);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;transition:all .2s ease;touch-action:manipulation;align-self:flex-end}
+    .add-times-btn:active:not(.disabled){background:var(--primary-text);color:#fff;transform:scale(.95)}
+    .add-times-btn.disabled{opacity:.4;pointer-events:none}
+    .remove-date-btn{background:transparent;color:var(--primary-text);border:none;width:var(--btn-size);height:var(--btn-size);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;align-self:flex-end;transition:all .2s ease;touch-action:manipulation}
+    .selected-date-item:active .remove-date-btn{opacity:1}
+    .remove-date-btn:active{background:var(--primary-bg);transform:scale(.95)}
+    
+    /* Compact selected dates summary for calendar page */
+    .selected-dates-summary{margin-top:12px;padding:12px;background:#fff;border:1px solid var(--border-color);border-radius:10px}
+    .selected-dates-summary .selected-dates-list{display:flex;flex-wrap:wrap;gap:6px;flex-direction:row;max-height:none;overflow:visible}
+    .selected-dates-summary .selected-date-item{display:inline-flex;align-items:center;padding:4px 8px;background:var(--accent-bg);border-radius:6px;border:2px solid var(--primary-text);font-size:12px;font-weight:500;color:var(--primary-text);min-width:auto;justify-content:center;flex-direction:row}
+    .selected-dates-summary .selected-date-text{font-size:12px;font-weight:500;color:var(--primary-text)}
+    
+    .time-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:1000;pointer-events:auto}
+    .time-modal.active{display:flex}
+    body.modal-open{overflow:hidden;}
+    body.modal-open .time-modal{pointer-events:auto}
+    .time-modal-content{background:#fff;border-radius:12px;width:90vw;max-height:80vh;overflow-y:auto;-webkit-overflow-scrolling:touch;animation:modalSlideIn .3s ease}
+    @keyframes modalSlideIn{from{opacity:0;transform:translateY(-20px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+    .time-modal-header{padding:16px;border-bottom:1px solid var(--border-color);display:flex;align-items:center;justify-content:space-between}
+    .time-modal-title{font-size:var(--font-size-title);font-weight:600;color:var(--primary-text)}
+    .time-modal-close{background:none;border:none;font-size:18px;color:var(--primary-text);cursor:pointer;padding:6px;border-radius:6px;transition:all .2s ease;touch-action:manipulation;width:var(--btn-size);height:var(--btn-size)}
+    .time-modal-close:active{background:var(--border-color);transform:scale(.95)}
+    .time-modal-date{padding:12px 16px;background:var(--accent-bg);border-bottom:1px solid var(--border-color);text-align:center}
+    .time-modal-date-text{font-size:var(--font-size-base);font-weight:500;color:var(--primary-text)}
+    .time-slots-container{padding:16px}
+    .time-slots-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+    .time-slot{padding:10px;border:2px solid var(--border-color);border-radius:8px;text-align:center;cursor:pointer;transition:all .2s ease;background:#fff;font-size:13px;font-weight:500;color:var(--primary-text);touch-action:manipulation;min-height:var(--btn-size)}
+    .time-slot:active:not(.selected){border-color:var(--primary-text);background:var(--primary-bg);transform:scale(.98)}
+    .time-slot.selected{border-color:var(--primary-text);background:var(--primary-bg)}
+    .time-modal-actions{padding:16px;border-top:1px solid var(--border-color);display:flex;justify-content:flex-end}
+    .house-sitting-note{background:var(--primary-bg);border:1px solid #f9a8d4;border-radius:10px;padding:12px;margin:12px 0;text-align:center}
+    .house-sitting-note i{color:var(--primary-text);font-size:18px;margin-bottom:6px;display:block}
+    .house-sitting-note p{color:var(--primary-text);font-size:13px;margin:0}
+    .contact-grid{display:grid;gap:10px;margin-bottom:12px}
+    .contact-row{display:grid;grid-template-columns:1fr;gap:10px}
+    .contact-group{display:flex;flex-direction:column}
+    .contact-label{font-size:var(--font-size-base);font-weight:600;color:var(--primary-text);margin-bottom:4px}
+    .contact-input{padding:8px 10px;border:1px solid var(--border-color);border-radius:8px;background:var(--accent-bg);font-size:var(--font-size-base);color:var(--primary-text);transition:all .2s ease;width:100%;min-height:var(--btn-size)}
+    .contact-input:focus{outline:none;border-color:var(--primary-text);background:#fff;box-shadow:0 0 0 2px rgba(67,47,33,.1)}
+    .contact-input::placeholder{color:var(--primary-text);opacity:.5}
+    .contact-textarea{resize:vertical;min-height:80px}
+    .full-width{grid-column:1 / -1}
+    .policy-checkbox{display:flex;align-items:flex-start;gap:8px;margin:12px 0;padding:10px;background:var(--accent-bg);border-radius:10px;border:1px solid var(--border-color)}
+    .policy-checkbox input[type=checkbox]{width:20px;height:20px;accent-color:var(--primary-text);flex-shrink:0}
+    .policy-text{font-size:13px;font-weight:500;color:var(--primary-text);line-height:1.4}
+    .confirmation-message{text-align:center;font-size:var(--font-size-base);font-weight:500;color:var(--primary-text);margin:16px 0}
+    .btn{width:100%;padding:12px;border:none;border-radius:10px;font-size:var(--font-size-base);font-weight:600;cursor:pointer;transition:all .2s ease;display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:10px;min-height:var(--btn-size);touch-action:manipulation}
+    .btn-primary{background:linear-gradient(135deg,var(--primary-text),#5c4032);color:#fff}
+    .btn-primary:active:not(:disabled){transform:scale(.98);box-shadow:0 4px 12px rgba(67,47,33,.3)}
+    .btn-primary:disabled{opacity:.6;cursor:not-allowed}
+    .btn-secondary{background:#fff;color:var(--primary-text);border:2px solid var(--primary-text)}
+    .btn-secondary:active{background:var(--primary-bg);transform:scale(.98)}
+    .btn-small{width:auto;padding:8px 12px;font-size:13px;min-height:var(--btn-size)}
+    @media (min-width:481px){
+      .booking-container{max-width:480px;margin:20px auto;border-radius:20px}
+      .booking-content{padding:24px}
+      .service-grid{grid-template-columns:repeat(2,1fr);gap:12px}
+      .booking-type-grid{grid-template-columns:1fr 1fr;gap:12px}
+      .contact-row{grid-template-columns:1fr 1fr;gap:12px}
+      .service-card{padding:16px 12px;min-height:90px}
+      .service-icon{font-size:28px;margin-bottom:8px}
+      .service-name{font-size:var(--font-size-base)}
+      .calendar-grid{gap:8px}
+      .calendar-day{font-size:var(--font-size-base);min-height:48px}
+      .time-slots-grid{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
+      .time-slot{padding:12px;font-size:var(--font-size-base)}
+      .selected-date-item{flex-direction:row;align-items:center;justify-content:space-between;padding:8px 12px}
+      .selected-date-info{width:auto}
+      .add-times-btn,.remove-date-btn{align-self:center}
+      .confirmation-message{font-size:16px}
+    }
+    .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);color:#fff;padding:10px 20px;border-radius:20px;display:none;z-index:2000}
+    .time-entry-row{display:flex;align-items:center;gap:8px;justify-content:space-around}
+    .time-entry-row select{padding:8px;border-radius:8px;border:1px solid var(--border-color);min-width:60px}
+    .segmented-control{display:flex;border:1px solid var(--primary-text);border-radius:8px;overflow:hidden}
+    .seg-btn{padding:8px 16px;background:#fff;border:none;cursor:pointer;transition:all .2s ease}
+    .seg-btn.selected{background:var(--primary-bg)}
+    .row-hint{font-size:12px;text-align:center;margin:8px 0;color:var(--primary-text);opacity:.7}
+    .time-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+    .chip{background:var(--primary-bg);padding:4px 8px;border-radius:12px;display:flex;align-items:center;gap:4px;font-size:13px;border:1px solid var(--primary-text)}
+    .chip-edit,.chip-remove{cursor:pointer;font-size:12px;color:var(--primary-text)}
+    .chip-edit:active,.chip-remove:active{color:#fff}
+    .empty-state{font-size:13px;color:var(--primary-text);opacity:.7;text-align:center}
+
+    /* === Apply-to-all toggle: perfectly fitting knob === */
+    /* Works whether your wrapper is #snout-booking or .booking-container */
+    #snout-booking, .booking-container {
+      /* Adjust these two to change size */
+      --toggle-h: 26px;   /* total height of the switch */
+      --toggle-w: 46px;   /* total width of the switch */
+
+      /* Do not change: keeps the knob perfectly fitted */
+      --toggle-pad: 3px;                                 /* equal padding around knob */
+      --knob: calc(var(--toggle-h) - var(--toggle-pad) * 2);
+      --toggle-on-x: calc(var(--toggle-w) - var(--knob) - var(--toggle-pad));
+    }
+
+    #snout-booking .apply-all-toggle .switch,
+    .booking-container .apply-all-toggle .switch {
+      width: var(--toggle-w);
+      height: var(--toggle-h);
+      border-radius: calc(var(--toggle-h) / 2);
+      background: #ddd;
+      position: relative;
+      box-sizing: border-box;
+      transition: background .15s ease;
+    }
+
+    #snout-booking .apply-all-toggle .switch::after,
+    .booking-container .apply-all-toggle .switch::after {
+      content: "";
+      position: absolute;
+      top: var(--toggle-pad);
+      left: var(--toggle-pad);
+      width: var(--knob);
+      height: var(--knob);
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,.2);
+      transition: left .15s ease;
+    }
+
+    #snout-booking .apply-all-toggle input,
+    .booking-container .apply-all-toggle input {
+      display: none;
+    }
+
+    #snout-booking .apply-all-toggle input:checked + .switch,
+    .booking-container .apply-all-toggle input:checked + .switch {
+      background: var(--snout-accent, #ff2e86);
+    }
+
+    #snout-booking .apply-all-toggle input:checked + .switch::after,
+    .booking-container .apply-all-toggle input:checked + .switch::after {
+      left: var(--toggle-on-x);
+    }
+
+    /* Apply-to-all toggle: use main color #fce1ef */
+    #snout-booking,
+    .booking-container {
+      --snout-accent: #fce1ef;
+    }
+
+    #snout-booking .apply-all-toggle input:checked + .switch,
+    .booking-container .apply-all-toggle input:checked + .switch {
+      background: #fce1ef !important;
+    }
+
+    /* (optional) keyboard focus ring in the same color */
+    #snout-booking .apply-all-toggle .switch:focus-visible,
+    .booking-container .apply-all-toggle .switch:focus-visible {
+      outline: 2px solid #fce1ef;
+      outline-offset: 2px;
+    }
+
+    /* Inline compact toggle next to Selected Dates */
+    .apply-all-toggle{display:inline-flex;align-items:center;gap:8px;font-size:12px;line-height:1;height:32px}
+    .apply-all-toggle .toggle-label{user-select:none}
+
+    /* Force toggle visibility when needed */
+    #applyAllContainer.show{display:inline-flex !important}
+
+    /* Time Wheel Styles - Scoped under .time-modal-content .wheel-snout */
+    .time-modal-content .wheel-snout .wheel-panel{
+      border:1px solid var(--border-color);
+      border-radius:8px; background:var(--accent-bg);
+      box-shadow:0 4px 12px rgba(0,0,0,.06);
+      overflow:hidden; position:relative;
+    }
+    .time-modal-content .wheel-snout .panel-header{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:8px 10px; background:var(--white); border-bottom:1px solid var(--border-color);
+      font-size:12px;
+    }
+    .time-modal-content .wheel-snout .panel-done{
+      font-size:12px; padding:4px 8px; border:1px solid var(--border-color);
+      border-radius:6px; background:var(--accent-bg); cursor:pointer;
+    }
+    .time-modal-content .wheel-snout .hint{opacity:.8}
+    .time-modal-content .wheel-snout .wheel{
+      position:relative;
+      height: 150px; /* Exactly 3 rows visible */
+      overflow:hidden;
+      background:var(--accent-bg);
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%);
+              mask-image: linear-gradient(to bottom, transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%);
+    }
+    .time-modal-content .wheel-snout .wheel::before, .time-modal-content .wheel-snout .wheel::after{
+      content:""; position:absolute; left:0; right:0; height:18px; pointer-events:none; z-index:2;
+    }
+    .time-modal-content .wheel-snout .wheel::before{
+      top:0; background:linear-gradient(to bottom, var(--accent-bg), rgba(248,250,252,0));
+    }
+    .time-modal-content .wheel-snout .wheel::after{
+      bottom:0; background:linear-gradient(to top, var(--accent-bg), rgba(248,250,252,0));
+    }
+    .time-modal-content .wheel-snout .wheel-list{
+      height:100%; overflow:auto;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior:smooth;
+      padding: 6px;
+    }
+    .time-modal-content .wheel-snout .wheel-list::-webkit-scrollbar{ width:6px }
+    .time-modal-content .wheel-snout .wheel-list::-webkit-scrollbar-thumb{ background:rgba(0,0,0,.12); border-radius:8px }
+    .time-modal-content .wheel-snout .time-row{
+      display:flex; align-items:center; justify-content:space-between; gap:8px;
+      padding:6px 10px; border-radius:8px; font-size:12px; height:48px; line-height:48px;
+      border:1px solid transparent; background:transparent;
+    }
+    .time-modal-content .wheel-snout .time-row[aria-pressed="true"]{
+      background:var(--white);
+      border-color:var(--border-color);
+      box-shadow: inset 0 0 0 1px var(--border-color);
+    }
+    .time-modal-content .wheel-snout .time-btn{
+      appearance:none; border:none; background:transparent; width:100%; text-align:left;
+      padding:0; color:inherit; font:inherit; cursor:pointer;
+    }
+    .time-modal-content .wheel-snout .duration-switch{
+      position:relative;
+      width:64px; height:34px; padding:2px; border-radius:8px; border:1px solid var(--border-color);
+      background:#fff; display:grid; grid-template-columns:1fr 1fr; align-items:center;
+      font-size:11px; cursor:pointer; user-select:none;
+    }
+    .time-modal-content .wheel-snout .duration-switch .seg{
+      text-align:center; opacity:.7; z-index:2; line-height:1;
+      transition: opacity .22s ease;
+    }
+    .time-modal-content .wheel-snout .duration-switch .thumb{
+      position:absolute; top:2px; left:2px; width:30px; height:30px;
+      border-radius:6px; background:var(--primary-bg);
+      transform: translateX(0%);
+      transition: transform .26s cubic-bezier(.22,1,.36,1);
+      will-change: transform;
+      border:none;
+    }
+    .time-modal-content .wheel-snout .duration-switch.on .thumb{ transform: translateX(30px); }
+    .time-modal-content .wheel-snout .duration-switch.on .seg-60{ opacity:1 }
+    .time-modal-content .wheel-snout .duration-switch:not(.on) .seg-30{ opacity:1 }
+    .time-modal-content .wheel-snout .chips{
+      display:flex; flex-wrap:wrap; gap:6px; padding:8px 10px;
+      border-top:1px solid var(--border-color); background:var(--white);
+    }
+    .time-modal-content .wheel-snout .chip{
+      display:inline-flex; align-items:center; gap:6px; border:1px solid var(--primary-text);
+      border-radius:999px; padding:4px 8px; font-size:12px; background:var(--primary-bg);
+    }
+    .time-modal-content .wheel-snout .chip .remove{ cursor:pointer }
+    .time-modal-content .wheel-snout .empty{ font-size:12px; opacity:.7; padding:4px 8px; }
+    .time-modal-content .wheel-snout .min-label{ font-size:11px; opacity:.75; margin-left:4px; }
+
+    /* Fit panel exactly under the selected date */
+    .inline-time-slot { position: relative; }
+    .inline-time-panel { width: 100%; max-width: 100%; margin-top: 8px;
+      background: #fff; border: 1px solid var(--border-color);
+      border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); overflow: hidden;
+    }
+    .inline-time-panel * { box-sizing: border-box; }
+    .inline-time-panel .time-modal-content { padding: 10px; }
+    .inline-time-panel .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .inline-time-panel .panel-done { border: 1px solid var(--border-color); background: var(--primary-bg); padding: 4px 10px; border-radius: 8px; font-size: 13px; }
+
+    /* Compact wheel list: 3 rows visible */
+    .inline-time-panel .wheel-snout .wheel { height: 132px; overflow: hidden; background: #f8fafc; border: 1px solid var(--border-color); border-radius: 10px; }
+    .inline-time-panel .wheel-snout .wheel-list { width: 100%; }
+
+    /* Row layout: time | 30/60 | min */
+    .inline-time-panel .wheel-snout .time-row {
+      display: grid;
+      grid-template-columns: 1fr 64px 28px;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 8px;
+      height: 44px; /* 3 rows => 132px */
+    }
+    .inline-time-panel .wheel-snout .time-btn { font-size: 14px; font-weight: 500; justify-self: start; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .inline-time-panel .wheel-snout .min-label { font-size: 12px; color: #6b7280; }
+
+    /* Keep the 30/60 square visible and crisp */
+    .inline-time-panel .wheel-snout .duration-switch { width: 64px; height: 34px; padding: 2px; border-radius: 8px; }
+    .inline-time-panel .wheel-snout .duration-switch .thumb { width: 30px; height: 30px; border-radius: 6px; }
+    .inline-time-panel .wheel-snout .duration-switch.on .thumb { transform: translateX(30px); }
+
+    /* Compact chips like screenshot */
+    .inline-time-panel .chips { padding-top: 8px; }
+    .inline-time-panel .chip { font-size: 13px; padding: 6px 10px; border-radius: 999px; }
+
+    /* Mobile tighten */
+    @media (max-width: 480px) {
+      .inline-time-panel .time-modal-content { padding: 8px; }
+      .inline-time-panel .wheel-snout .time-row { height: 42px; padding: 4px 8px; gap: 6px; }
+      .inline-time-panel .wheel-snout .wheel { height: 126px; }
+    }
+
+    /* Card sits INSIDE the selected-date box and auto-sizes to that box */
+    .time-picker-slot { width: 100%; }
+
+    /* Compact card */
+    .tp-card{
+      width:100%;
+      background:#fff;
+      border:1px solid #e2e8f0;
+      border-radius:14px;
+      box-shadow:0 8px 24px rgba(0,0,0,.08);
+      overflow:hidden;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+    }
+
+    /* Header */
+    .tp-head{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:10px 12px;
+    }
+    .tp-title{
+      display:flex;align-items:center;gap:8px;
+      color:#432f21;font-weight:700;font-size:15px;
+    }
+    .tp-title::before{
+      content:""; width:12px;height:12px;border-radius:50%;
+      background:#432f21; display:inline-block;
+    }
+
+    /* Done button */
+    .tp-done{
+      font-size:13px;padding:6px 10px;border-radius:10px;border:1px solid #e2e8f0;
+      background:#fff; cursor:pointer;
+    }
+
+    /* List box: same look as your inner panel */
+    .tp-list{
+      border-top:1px solid #edf2f7;border-bottom:1px solid #edf2f7;
+      background:#f8fafc;
+      max-height:144px;           /* ~3 rows visible */
+      overflow-y:auto;
+    }
+
+    /* Row */
+    .tp-row{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:10px 12px; font-size:14px; color:#432f21;
+    }
+    .tp-row + .tp-row{ border-top:1px solid #eef2f7; }
+    .tp-row.is-selected{ background:#fce1ef; }
+
+    /* 30 | 60 toggle */
+    .tp-toggle{
+      display:inline-flex; align-items:center; gap:6px;
+      background:#ffe6f1; padding:4px 6px; border-radius:9px; user-select:none;
+      font-size:12px; line-height:1; color:#432f21;
+    }
+    .tp-chip{
+      padding:4px 6px;border-radius:6px;cursor:pointer;
+    }
+    .tp-chip.is-active{
+      background:#ffcfe2;    /* your pink */
+      box-shadow:inset 0 0 0 1px rgba(0,0,0,.06);
+    }
+
+    /* Footer */
+    .tp-foot{ padding:10px 12px; font-size:12px; color:#6b7280; }
+
+    /* Mobile safety */
+    @media (max-width: 480px){
+      .tp-head{ padding:8px 10px; }
+      .tp-row{ padding:8px 10px; }
+      .tp-list{ max-height:132px; }
+    }
+
+/* ensure picker renders inside the date card */
+.time-picker-slot{ display:block; width:100%; margin-top:8px; }
+.tp-card{ position:static !important; inset:auto !important; transform:none !important; width:100% !important; max-width:100% !important; }
+
+/* ===== SNOUT MOBILE + WEBFLOW OPTIMIZATION ===== */
+#snout-booking{
+  --snout-accent: #ff2e86; /* set to your brand pink */
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  touch-action: manipulation;
+  font-size: 16px; /* prevents iOS zoom on tap */
+}
+
+#snout-booking .service-card.is-active,
+#snout-booking .tp-chip.is-active,
+#snout-booking .calendar-day.selected,
+#snout-booking [data-calendar-day].selected {
+  background: var(--snout-accent);
+  color: #fff;
+}
+
+/* Selected dates list: never cram; scroll instead */
+#snout-booking #selectedDatesContainer{
+  max-height: calc(var(--snout-vh, 1vh) * 40);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 4px;
+}
+
+/* Keep each date card readable and tappable */
+#snout-booking .selected-date-item{ position: relative; display: block; }
+#snout-booking .selected-date-row{ display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+#snout-booking .selected-times-line,
+#snout-booking .times-display{ white-space: normal; line-height: 1.35; }
+
+/* Inline time picker always sits under its date card */
+#snout-booking .time-picker-slot{ display:block; width:100%; margin-top:8px; }
+#snout-booking .tp-card{
+  position: static !important; inset: auto !important; transform: none !important;
+  width: 100% !important; max-width: 100% !important; z-index: 1;
+  border-radius: 14px; box-shadow: 0 6px 20px rgba(0,0,0,.08);
+  background:#fff;
+}
+#snout-booking .tp-head{ display:flex; align-items:center; justify-content:space-between; padding:10px 12px; }
+#snout-booking .tp-title{ font-weight:600; }
+#snout-booking .tp-done{ padding:8px 12px; border-radius:10px; border:0; background:#111; color:#fff; cursor:pointer; }
+
+#snout-booking .tp-list{
+  max-height: calc(var(--snout-vh, 1vh) * 45);
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+}
+#snout-booking .tp-row{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  min-height: 48px; padding: 8px 12px; border-bottom: 1px solid #eee;
+}
+#snout-booking .tp-row:last-child{ border-bottom:0; }
+
+/* 30/60 chips: big enough for thumbs */
+#snout-booking .tp-chip{
+  display:inline-flex; align-items:center; justify-content:center;
+  min-width:36px; height:36px; border-radius:10px; padding:0 8px;
+  background:#f5f5f5; font-weight:600; cursor:pointer; user-select:none;
+}
+#snout-booking .tp-chip.is-active{ background: var(--snout-accent); color:#fff; }
+#snout-booking .tp-min-label{ margin-left:6px; opacity:.7; }
+
+/* Prevent Webflow interactions from clipping the picker */
+#snout-booking, #snout-booking * { transform: translateZ(0); }
+
+/* Breakpoints */
+@media (max-width: 767px){
+  #snout-booking .selected-date-row{ align-items: flex-start; }
+  #snout-booking .tp-list{ max-height: calc(var(--snout-vh, 1vh) * 50); }
+}
+
+@media (max-width: 479px){
+  #snout-booking .tp-head{ padding:8px 10px; }
+  #snout-booking .tp-title{ font-size:14px; }
+  #snout-booking .tp-done{ font-size:14px; padding:6px 10px; }
+  #snout-booking .tp-row{ min-height: 52px; }
+  #snout-booking #selectedDatesContainer{ max-height: calc(var(--snout-vh, 1vh) * 38); }
+}
+
+/* House Sitting = no duration chips */
+#snout-booking.is-housesitting .tp-toggle,
+#snout-booking.is-housesitting .tp-chip,
+#snout-booking.is-housesitting .tp-min-label {
+  display: none !important;
+}
+
+/* Re-align rows when chips are hidden */
+#snout-booking.is-housesitting .tp-row {
+  justify-content: flex-start;
+}
+
+    /* Selected Date Card Structure */
+    .selected-date-card {
+      list-style: none;
+      margin-bottom: 8px;
+      padding: 0;
+    }
+    .selected-date-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      background: var(--accent-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      gap: 8px;
+    }
+    .date-label {
+      font-size: var(--font-size-base);
+      font-weight: 600;
+      color: var(--primary-text);
+      flex: 1;
+    }
+    .selected-times-line {
+      font-size: 12px;
+      color: var(--primary-text);
+      opacity: 0.7;
+      flex: 1;
+      text-align: center;
+    }
+    .add-times-btn {
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--border-color);
+      border-radius: 50%;
+      background: var(--white);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: var(--primary-text);
+      transition: all 0.2s ease;
+    }
+    .add-times-btn:hover:not(.disabled) {
+      background: var(--primary-bg);
+      border-color: var(--primary-text);
+    }
+    .add-times-btn.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+  
+/* Single-overlay safety: block background taps without double-tap */
+.app-inert{pointer-events:none;user-select:none;touch-action:none}
+body.overlay-open #timeModal{display:flex !important;}
+
+
+/* Ensure overlay is clearly interactive */
+#timeModal{cursor:default; z-index: 2147483000;}
+#timeModal.active{display:flex;}
+
+
+
+
+/* Emphasis for house-sitting note (subtle, design-safe) */
+.hs-emph { font-weight: 600; letter-spacing: 0.2px; }
+
+
+/* Hide bottom hint only for House Sitting */
+.is-housesitting .tp-foot { display: none !important; }
+
+
+
+:root { --snout-vh: 1vh; }
+
+/* Calendar fit on mobile */
+@media (max-width: 480px){
+  .booking-container { width: calc(100vw - 20px) !important; max-width: calc(100% - 20px) !important; margin: 10px auto !important; border-radius: 16px !important; overflow: visible !important; }
+  .booking-content { padding: 12px !important; }
+  .calendar-container { padding: 12px !important; }
+  .calendar-grid { grid-template-columns: repeat(7, minmax(0, 1fr)) !important; gap: 3px !important; }
+  .calendar-header-day, .calendar-day { min-width: 0 !important; padding: 6px !important; font-size: 11px !important; }
+  .calendar-day { border-width: 1px !important; }
+}
+
+/* Smooth pet dropdown and anti-jank */
+@media (max-width: 900px){
+  .pet-dropdown-panel{
+    transition: transform .22s cubic-bezier(.2,.9,.2,1), opacity .22s cubic-bezier(.2,.9,.2,1) !important;
+    will-change: transform, opacity;
+    transform: translateY(-8px);
+    opacity: 0;
+    backface-visibility: hidden;
+    contain: layout paint;
+  }
+  .pet-dropdown-panel.active{ transform: translateY(0); opacity: 1; }
+  .pet-dropdown-trigger i{ transition: transform .22s cubic-bezier(.2,.9,.2,1); will-change: transform; }
+  .pet-dropdown-trigger.active i{ transform: rotate(180deg); }
+}
+@media (prefers-reduced-motion: reduce){
+  .pet-dropdown-panel{ transition: none !important; }
+  .pet-dropdown-trigger i{ transition: none !important; }
+}
+
+/* Overlay that shows the same inline time-picker over a dimmed backdrop */
+@media (max-width: 900px){
+  .time-modal{
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    height: calc(var(--snout-vh, 1vh) * 100) !important; /* iOS fallback */
+    display: none !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: rgba(0,0,0,.58) !important;
+    z-index: 2147483647 !important;
+    padding: 12px !important; /* breathing room on tiny phones */
+  }
+  .time-modal.active{ display: flex !important; }
+  /* Hide the outer modal chrome, we only show the inner card */
+  .time-modal-header, .time-modal-date, .time-modal-actions{ display: none !important; }
+  .time-modal-content{ background: transparent !important; border: 0 !important; width: auto !important; height: auto !important; padding: 0 !important; }
+  .time-modal .time-picker-slot{ width: 100%; display: block; }
+
+  /* Card look exactly like dropdown */
+  .time-modal .tp-card{
+    width: 92vw !important;
+    max-width: 92vw !important;
+    max-height: calc(var(--snout-vh,1vh) * 86) !important;
+    border-radius: 14px !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,.08) !important;
+    background: #fff !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+  .time-modal .tp-head{ flex: 0 0 auto !important; }
+  .time-modal .tp-list{ flex: 1 1 auto !important; overflow-y: auto !important; -webkit-overflow-scrolling: touch !important; }
+  .time-modal .tp-foot{ flex: 0 0 auto !important; }
+  .time-modal .tp-row{ min-height: 56px !important; }
+
+  /* Centered chip style and darker active outline */
+  .time-modal .tp-chip{
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 42px !important;
+    height: 36px !important;
+    padding: 0 10px !important;
+    line-height: 1 !important;
+    font-weight: 700 !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    border-radius: 10px !important;
+    border: 1px solid rgba(0,0,0,.12) !important;
+  }
+  .time-modal .tp-chip.is-active{
+    border: 1px solid rgba(0,0,0,.38) !important;
+    background: var(--snout-accent,#fce1ef) !important;
+    color: #432f21 !important;
+  }
+
+  /* Hide any inline time-picker while overlay is open to avoid duplication */
+  body.overlay-open #selectedDatesList .time-picker-slot{ display: none !important; }
+
+  /* Pet panel anti-cutoff */
+  #petPanel{
+    position: relative;
+    z-index: 200 !important;
+    max-height: min(70dvh, calc(var(--snout-vh,1vh)*70)) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .booking-container, .booking-content, .pet-dropdown, .service-card{ overflow: visible !important; }
+}
+
+
+
+/* CLEAN-FINAL v2: Bigger mobile calendar and 5-row times list */
+
+/* 1) Calendar: maximize within form on small screens */
+@media (max-width: 480px){
+  .calendar-container{
+    padding: 8px !important;      /* small padding to give grid more room */
+  }
+  .calendar-grid{
+    grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+    gap: 2px !important;          /* tighter gaps so cells can be larger */
+  }
+  .calendar-header-day, .calendar-day{
+    min-width: 0 !important;
+    padding: 10px 6px !important; /* larger hit area */
+    font-size: 13px !important;   /* larger text for visibility */
+    line-height: 1.1 !important;
+  }
+  .calendar-title{
+    font-size: 18px !important;
+  }
+}
+
+/* 2) Select Times (overlay): show approximately 5 rows */
+@media (max-width: 900px){
+  .time-modal .tp-row{
+    min-height: 58px !important;
+  }
+  .time-modal .tp-list{
+    max-height: 300px !important;           /* ~5 x 58 with padding */
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+}
+
+
+
+  /* Uses existing CSS variables to match house-sitting pink */
+  #snout-toast {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -120%);
+    z-index: 9999;
+    background: var(--primary-bg);
+    color: var(--primary-text);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 6px 16px rgba(0,0,0,.15);
+    border-radius: 12px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform .28s ease, opacity .28s ease;
+    opacity: 0;
+    pointer-events: none;
+    font-size: var(--font-size-base);
+  }
+  #snout-toast.show {
+    transform: translate(-50%, 12px);
+    opacity: 1;
+  }
+  #snout-toast i {
+    color: var(--primary-text);
+    font-size: 18px;
+  }
+  @media (max-width: 479px){
+    #snout-toast{ width: calc(100vw - 24px); }
+  }
