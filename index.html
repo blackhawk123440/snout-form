@@ -73,7 +73,24 @@
       -moz-osx-font-smoothing: grayscale;
       overflow-x: hidden;
       margin: 0;
-      padding: 0;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    /* White container wrapper for iframe embedding */
+    .form-wrapper {
+      width: 100%;
+      max-width: 600px;
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      padding: 20px;
+      margin: 0 auto;
+      transition: all 0.3s ease;
+      overflow: visible;
     }
 
     /* Webflow integration optimizations */
@@ -81,11 +98,11 @@
       position: relative;
       z-index: 1;
       isolation: isolate;
-      contain: layout style paint;
       width: 100%;
       max-width: 100%;
       margin: 0 auto;
       background: transparent;
+      overflow: visible;
     }
 
     /* Prevent Webflow style conflicts */
@@ -138,19 +155,16 @@
     .booking-form {
       all: initial;
       font-family: var(--font-family);
-      max-width: 480px;
       width: 100%;
-      margin: 0 auto;
-      background: var(--white);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow-lg);
+      margin: 0;
+      background: transparent;
+      border-radius: 0;
+      box-shadow: none;
       overflow: visible;
       position: relative;
       z-index: 10;
       isolation: isolate;
-      contain: layout style paint;
       transition: all var(--transition-slow);
-      will-change: transform;
       backface-visibility: hidden;
       min-height: 0;
       flex-shrink: 0;
@@ -158,6 +172,7 @@
 
     .booking-content {
       padding: var(--space-md);
+      overflow: visible;
     }
 
     /* ===== PROGRESS INDICATOR ===== */
@@ -237,10 +252,12 @@
     .form-section {
       display: none;
       animation: fadeInUp 0.4s ease;
+      overflow: visible;
     }
 
     .form-section.active {
       display: block;
+      overflow: visible;
     }
 
     @keyframes fadeInUp {
@@ -685,6 +702,7 @@
       padding: var(--space-lg);
       margin-bottom: var(--space-xl);
       border: 1px solid var(--secondary);
+      overflow: visible;
     }
 
     .calendar-header {
@@ -973,7 +991,7 @@
       border-radius: var(--radius-lg);
       width: 100%;
       max-width: 500px;
-      max-height: 80vh;
+      max-height: 90vh;
       display: flex;
       flex-direction: column;
       animation: modalSlideIn 0.3s ease;
@@ -1058,7 +1076,7 @@
       flex-direction: column;
       gap: var(--space-sm);
       padding: var(--space-sm);
-      max-height: 300px;
+      max-height: 700px;
       overflow-y: auto;
     }
 
@@ -1350,8 +1368,7 @@
 
     /* ===== RESPONSIVE DESIGN ===== */
     @media (min-width: 481px) {
-      .booking-form {
-        width: 90vw;
+      .form-wrapper {
         max-width: 600px;
       }
 
@@ -1374,22 +1391,14 @@
 
     @media (max-width: 480px) {
       /* Enhanced Webflow mobile optimizations */
-      .booking-form {
-        width: calc(100vw - 16px);
-        max-width: 420px;
-        margin: 8px auto;
+      body {
+        padding: 10px;
+      }
+
+      .form-wrapper {
+        max-width: 100%;
         border-radius: var(--radius-lg);
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        position: relative;
-        z-index: 10;
-        isolation: isolate;
-        contain: layout style paint;
-        transform: translateZ(0);
-        -webkit-transform: translateZ(0);
-        -webkit-backface-visibility: hidden;
-        backface-visibility: hidden;
-        will-change: transform;
-        touch-action: manipulation;
       }
 
       .booking-content {
@@ -1431,7 +1440,7 @@
       .calendar-container {
         padding: var(--space-sm);
         margin: var(--space-xs) 0;
-        overflow: hidden;
+        overflow: visible;
       }
 
 
@@ -1706,7 +1715,7 @@
       .time-modal-content {
         width: 100%;
         max-width: none;
-        max-height: 85vh;
+        max-height: 92vh;
         border-radius: var(--radius-lg);
         margin: var(--space-md);
       }
@@ -1723,7 +1732,7 @@
 
       .time-slots-container {
         padding: var(--space-md);
-        max-height: 50vh;
+        max-height: 75vh;
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
         scroll-behavior: smooth;
@@ -1739,7 +1748,7 @@
       }
 
       .time-modal-content {
-        max-height: 90vh;
+        max-height: 95vh;
         margin: var(--space-sm);
         border-radius: var(--radius-lg);
         overflow: hidden;
@@ -1887,7 +1896,8 @@
   </style>
 </head>
 <body>
-  <div class="booking-form" data-wf-form="booking">
+  <div class="form-wrapper">
+    <div class="booking-form" data-wf-form="booking">
     <!-- Progress Indicator -->
     <div class="progress-container">
       <div class="progress-bar">
@@ -2279,6 +2289,7 @@
       </div>
     </div>
   </div>
+  </div> <!-- Close form-wrapper -->
 
   <script>
     // ===== BOOKING FORM STATE MANAGEMENT =====
@@ -3313,6 +3324,57 @@
     // ===== TOUCH OPTIMIZATIONS =====
     document.addEventListener('touchstart', () => {}, { passive: true });
     document.addEventListener('touchmove', () => {}, { passive: true });
+
+    // ===== IFRAME DYNAMIC HEIGHT RESIZING =====
+    // This script sends the form height to the parent window for smooth iframe resizing
+    function sendHeightToParent() {
+      // Get the actual height of the content
+      const wrapper = document.querySelector('.form-wrapper');
+      if (!wrapper) return;
+      
+      const height = wrapper.scrollHeight + 40; // Add padding
+      
+      // Send height to parent window (Webflow)
+      if (window.parent !== window) {
+        window.parent.postMessage({
+          type: 'iframe-resize',
+          height: height
+        }, '*');
+      }
+    }
+
+    // Initialize ResizeObserver for dynamic height tracking
+    if (typeof ResizeObserver !== 'undefined') {
+      const wrapper = document.querySelector('.form-wrapper');
+      if (wrapper) {
+        const resizeObserver = new ResizeObserver(() => {
+          sendHeightToParent();
+        });
+        resizeObserver.observe(wrapper);
+      }
+    }
+
+    // Fallback: Send height on various events
+    window.addEventListener('load', sendHeightToParent);
+    window.addEventListener('resize', sendHeightToParent);
+    
+    // Send height when form content changes
+    const bookingContent = document.querySelector('.booking-content');
+    if (bookingContent) {
+      const contentObserver = new MutationObserver(() => {
+        setTimeout(sendHeightToParent, 100);
+      });
+      contentObserver.observe(bookingContent, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        characterData: true
+      });
+    }
+
+    // Send initial height
+    setTimeout(sendHeightToParent, 100);
+    setTimeout(sendHeightToParent, 500);
   </script>
 </body>
 </html>
