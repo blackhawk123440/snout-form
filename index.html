@@ -95,19 +95,6 @@
       position: relative;
     }
 
-    .form-wrapper::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, 
-        var(--primary-light) 0%, 
-        var(--primary) 50%, 
-        var(--primary-light) 100%);
-      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-    }
 
     /* Webflow integration optimizations */
     .booking-container {
@@ -294,6 +281,7 @@
       margin-bottom: var(--space-md);
       padding-bottom: var(--space-xs);
       border-bottom: 1px solid var(--secondary);
+      position: relative;
     }
 
     .section-icon {
@@ -1630,48 +1618,81 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 18px;
-      height: 18px;
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
       background: var(--primary-light);
       color: var(--primary);
-      font-size: 12px;
-      margin-left: var(--space-xs);
+      font-size: 13px;
       cursor: help;
-      position: relative;
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 10;
+      transition: all 0.2s ease;
+    }
+    
+    .help-icon:hover {
+      background: var(--primary);
+      color: var(--white);
+      transform: scale(1.1);
     }
 
-    .help-icon:hover::after {
+    .help-icon:active {
+      transform: scale(0.95);
+    }
+
+    .help-icon:hover::after,
+    .help-icon:active::after {
       content: attr(data-tooltip);
-      position: absolute;
-      bottom: 100%;
+      position: fixed;
+      top: auto;
+      bottom: auto;
       left: 50%;
-      transform: translateX(-50%);
-      margin-bottom: 8px;
-      padding: var(--space-sm) var(--space-md);
+      top: 50%;
+      transform: translate(-50%, -50%);
+      padding: var(--space-md) var(--space-lg);
       background: var(--primary);
       color: var(--white);
       border-radius: var(--radius-md);
-      font-size: var(--font-size-xs);
-      white-space: nowrap;
-      max-width: 200px;
-      white-space: normal;
+      font-size: var(--font-size-sm);
+      max-width: 280px;
       width: max-content;
-      z-index: 1000;
-      box-shadow: var(--shadow-lg);
+      z-index: 10000;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
       animation: fadeIn 0.2s ease;
+      line-height: 1.5;
     }
 
     .help-icon:hover::before {
-      content: '';
-      position: absolute;
-      bottom: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      margin-bottom: 2px;
-      border: 6px solid transparent;
-      border-top-color: var(--primary);
-      z-index: 1001;
+      display: none;
+    }
+    
+    /* Desktop tooltip positioning */
+    @media (min-width: 768px) {
+      .help-icon:hover::after,
+      .help-icon:active::after {
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        top: auto;
+        transform: translateX(-50%);
+        margin-bottom: 8px;
+      }
+      
+      .help-icon:hover::before,
+      .help-icon:active::before {
+        content: '';
+        display: block;
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        margin-bottom: 2px;
+        border: 6px solid transparent;
+        border-top-color: var(--primary);
+        z-index: 10001;
+      }
     }
 
     @keyframes fadeIn {
@@ -2324,9 +2345,10 @@
             <i class="fas fa-heart"></i>
           </div>
           <div class="section-content">
-            <h2 class="section-title">Tell Us About Your Pet<span class="help-icon" data-tooltip="Select the number of each type of pet you'll need care for">?</span></h2>
+            <h2 class="section-title">Tell Us About Your Pet</h2>
             <p class="section-subtitle">Help us provide the best care</p>
           </div>
+          <span class="help-icon" data-tooltip="Select the number of each type of pet you'll need care for">?</span>
         </div>
 
         <!-- Pet Selection -->
@@ -2437,9 +2459,10 @@
             <i class="fas fa-calendar-alt"></i>
           </div>
           <div class="section-content">
-            <h2 class="section-title">Choose Your Dates<span class="help-icon" data-tooltip="Click on calendar dates to select them. For house sitting, dates must be consecutive.">?</span></h2>
+            <h2 class="section-title">Choose Your Dates</h2>
             <p class="section-subtitle">Select the dates you need care</p>
           </div>
+          <span class="help-icon" data-tooltip="Click on calendar dates to select them. For house sitting, dates must be consecutive.">?</span>
         </div>
 
         <div class="calendar-container" data-automation="calendar-container">
@@ -2478,9 +2501,10 @@
             <i class="fas fa-clock"></i>
           </div>
           <div class="section-content">
-            <h2 class="section-title">Select Times<span class="help-icon" data-tooltip="Click the clock icon next to each date to choose specific times. You can also set the duration for each appointment.">?</span></h2>
+            <h2 class="section-title">Select Times</h2>
             <p class="section-subtitle">Choose the best times for your pet's care</p>
           </div>
+          <span class="help-icon" data-tooltip="Click the clock icon next to each date to choose specific times.">?</span>
         </div>
 
         <div class="selected-dates-container">
@@ -3593,7 +3617,25 @@
 
         if (!modal || !title || !dateDisplay || !container) return;
 
-        title.textContent = 'Select Times';
+        // For house sitting, show "Start Time" or "End Time"
+        const isHouseSitting = window.bookingForm.state.selectedService === 'pet-sitting';
+        const selectedDates = window.bookingForm.state.selectedDates;
+        
+        if (isHouseSitting && selectedDates.length > 0) {
+          const firstDate = selectedDates[0];
+          const lastDate = selectedDates[selectedDates.length - 1];
+          
+          if (dateStr === firstDate) {
+            title.textContent = 'Select Start Time';
+          } else if (dateStr === lastDate) {
+            title.textContent = 'Select End Time';
+          } else {
+            title.textContent = 'Select Times';
+          }
+        } else {
+          title.textContent = 'Select Times';
+        }
+        
         // Parse date correctly to avoid timezone issues
         const [year, month, day] = dateStr.split('-').map(Number);
         const date = new Date(year, month - 1, day);
