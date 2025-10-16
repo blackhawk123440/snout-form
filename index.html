@@ -1392,18 +1392,18 @@
     @media (max-width: 480px) {
       /* Enhanced Webflow mobile optimizations */
       body {
-        padding: 5px;
+        padding: 10px;
       }
 
       .form-wrapper {
         max-width: 100%;
-        padding: 12px;
+        padding: 16px;
         border-radius: var(--radius-lg);
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
       }
 
       .booking-content {
-        padding: var(--space-sm);
+        padding: var(--space-md);
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
       }
@@ -1439,9 +1439,11 @@
       }
 
       .calendar-container {
-        padding: var(--space-sm) var(--space-xs);
-        margin: var(--space-xs) 0;
-        overflow: visible;
+        padding: var(--space-md);
+        margin: var(--space-sm) 0;
+        overflow: hidden;
+        width: 100%;
+        box-sizing: border-box;
       }
 
 
@@ -1461,19 +1463,19 @@
       }
 
       .section-header {
-        margin-bottom: var(--space-sm);
-        padding-bottom: var(--space-xs);
+        margin-bottom: var(--space-lg);
+        padding-bottom: var(--space-sm);
       }
 
       .section-icon {
-        width: 36px;
-        height: 36px;
-        font-size: var(--font-size-sm);
+        width: 40px;
+        height: 40px;
+        font-size: var(--font-size-base);
         margin-right: var(--space-sm);
       }
 
       .section-title {
-        font-size: var(--font-size-base);
+        font-size: var(--font-size-lg);
       }
 
       .section-subtitle {
@@ -1678,14 +1680,21 @@
       /* Mobile calendar optimizations */
       .calendar-grid {
         gap: 2px !important;
-        padding: var(--space-sm) !important;
+        padding: 0 !important;
       }
 
       .calendar-day {
-        min-height: 44px !important;
-        font-size: var(--font-size-sm) !important;
+        min-height: 42px !important;
+        height: 42px !important;
+        font-size: 13px !important;
+        padding: 4px 2px !important;
         touch-action: manipulation !important;
         -webkit-tap-highlight-color: transparent !important;
+      }
+
+      .calendar-header-day {
+        font-size: 11px !important;
+        padding: 4px 2px !important;
       }
 
       .selected-date-item {
