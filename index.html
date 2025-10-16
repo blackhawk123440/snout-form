@@ -3419,6 +3419,22 @@
           this.setupStep(6);
           // Trigger confetti celebration!
           triggerConfetti();
+          // Update iframe height for confirmation page (multiple times to ensure it shrinks)
+          setTimeout(() => {
+            if (typeof sendHeightToParent === 'function') {
+              sendHeightToParent();
+            }
+          }, 50);
+          setTimeout(() => {
+            if (typeof sendHeightToParent === 'function') {
+              sendHeightToParent();
+            }
+          }, 200);
+          setTimeout(() => {
+            if (typeof sendHeightToParent === 'function') {
+              sendHeightToParent();
+            }
+          }, 500);
         }, 1500);
       }
 
@@ -3438,11 +3454,32 @@
         });
 
         // Reset contact form
-        this.elements.contactInputs.forEach(input => input.value = '');
+        this.elements.contactInputs.forEach(input => {
+          input.value = '';
+          input.classList.remove('valid', 'invalid');
+        });
         this.elements.policyCheckbox.checked = false;
+
+        // Reset submit button state
+        if (this.elements.submitBtn) {
+          this.elements.submitBtn.classList.remove('loading');
+          this.elements.submitBtn.disabled = false;
+        }
+
+        // Clear calendar selection
+        if (this.calendar) {
+          this.calendar.render();
+        }
 
         // Start over
         this.setupStep(1);
+        
+        // Update iframe height when starting new booking
+        setTimeout(() => {
+          if (typeof sendHeightToParent === 'function') {
+            sendHeightToParent();
+          }
+        }, 100);
       }
     }
 
