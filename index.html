@@ -2609,8 +2609,8 @@
       <!-- Step 6: Confirmation -->
       <div class="form-section" id="step6">
         <div class="confirmation-message">
-          <h3>🎉 Booking Confirmed!</h3>
-          <p>Thank you for choosing Snout Pet Care! We've received your booking request and will contact you within 24 hours to confirm all details.</p>
+          <h3><i class="fas fa-check-circle" style="color: var(--primary); margin-right: 8px;"></i>Booking Confirmed!</h3>
+          <p>Thank you for choosing Snout Services! We've received your booking request and will contact you within 24 hours to confirm all details.</p>
         </div>
 
         <button class="btn btn-secondary" id="startNewBooking">
@@ -2769,13 +2769,32 @@
       }
 
       isContactFormValid() {
-        const requiredFields = ['firstName', 'lastName', 'email', 'phone', 'address'];
         const policyAgreed = document.getElementById('policyAgreement')?.checked;
         
-        return requiredFields.every(field => {
-          const input = document.getElementById(field);
-          return input && input.value.trim() !== '';
-        }) && policyAgreed;
+        // Check basic required fields
+        const firstName = document.getElementById('firstName')?.value.trim();
+        const lastName = document.getElementById('lastName')?.value.trim();
+        const email = document.getElementById('email')?.value.trim();
+        const phone = document.getElementById('phone')?.value.trim();
+        
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const phoneRegex = /^[\d\s\-\(\)+]+$/;
+        
+        if (!firstName || !lastName || !email || !emailRegex.test(email) || !phone || phone.length < 10 || !phoneRegex.test(phone) || !policyAgreed) {
+          return false;
+        }
+        
+        // Check address based on service type
+        const isPetTaxi = this.selectedService === 'pet-taxi';
+        if (isPetTaxi) {
+          const pickupAddress = document.getElementById('pickupAddress')?.value.trim();
+          const dropoffAddress = document.getElementById('dropoffAddress')?.value.trim();
+          return pickupAddress && dropoffAddress;
+        } else {
+          const address = document.getElementById('address')?.value.trim();
+          return address;
+        }
       }
     }
 
@@ -2949,6 +2968,10 @@
             break;
           case 4:
             this.updateSelectedDatesDisplay();
+            break;
+          case 5:
+            // Validate contact form when entering step 5
+            this.validateContactForm();
             break;
         }
       }
