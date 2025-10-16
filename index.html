@@ -3417,8 +3417,6 @@
           // Clear auto-save after successful submission
           this.state.clearState();
           this.setupStep(6);
-          // Trigger confetti celebration!
-          triggerConfetti();
           // Update iframe height for confirmation page (multiple times to ensure it shrinks)
           setTimeout(() => {
             if (typeof sendHeightToParent === 'function') {
