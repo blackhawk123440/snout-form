@@ -80,6 +80,10 @@
       justify-content: center;
     }
 
+    body.modal-open {
+      overflow: hidden;
+    }
+
     /* White container wrapper for iframe embedding */
     .form-wrapper {
       width: 100%;
@@ -2449,10 +2453,21 @@
           case 3:
             return this.selectedDates.length > 0;
           case 4:
-            // For house sitting, allow proceeding with at least one time on first date
+            // For house sitting, require times on first and last date (start and end)
             if (this.selectedService === 'pet-sitting') {
+              if (this.selectedDates.length === 0) return false;
               const firstDate = this.selectedDates[0];
-              return firstDate && this.dateTimes[firstDate] && this.dateTimes[firstDate].length > 0;
+              const lastDate = this.selectedDates[this.selectedDates.length - 1];
+              const hasStartTime = this.dateTimes[firstDate] && this.dateTimes[firstDate].length > 0;
+              
+              // If only one date selected, only need start time
+              if (this.selectedDates.length === 1) {
+                return hasStartTime;
+              }
+              
+              // If multiple dates, need both start and end times
+              const hasEndTime = this.dateTimes[lastDate] && this.dateTimes[lastDate].length > 0;
+              return hasStartTime && hasEndTime;
             }
             // For other services, require times on all dates
             return this.selectedDates.every(date => 
@@ -3315,10 +3330,10 @@
           // Remove time
           window.bookingForm.state.dateTimes[dateStr].splice(existingIndex, 1);
         } else {
-          // For house sitting, limit to 2 times per date
+          // For house sitting, limit to 1 time per date
           if (window.bookingForm.state.selectedService === 'pet-sitting' && 
-              window.bookingForm.state.dateTimes[dateStr].length >= 2) {
-            showCustomAlert('House sitting allows only 2 times per date (start and end times).', 'fa-clock');
+              window.bookingForm.state.dateTimes[dateStr].length >= 1) {
+            showCustomAlert('House sitting allows only one time per date. Select a time for your start date and end date.', 'fa-clock');
             return;
           }
           
@@ -3394,8 +3409,11 @@
         const modal = document.getElementById('timeModal');
         if (modal) {
           modal.classList.remove('active');
-          document.body.classList.remove('modal-open');
         }
+        // Always remove modal-open class to restore scrolling
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.position = '';
       }
     }
 
