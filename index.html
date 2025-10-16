@@ -1372,6 +1372,92 @@
       line-height: 1.6;
     }
 
+    /* ===== CUSTOM ALERT NOTIFICATION ===== */
+    .custom-alert {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
+      background: var(--white);
+      border: 2px solid var(--primary-light);
+      border-radius: var(--radius-xl);
+      padding: var(--space-2xl);
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 20px 60px rgba(67, 47, 33, 0.3);
+      z-index: 10000;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      pointer-events: none;
+    }
+
+    .custom-alert.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+      pointer-events: all;
+    }
+
+    .custom-alert-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .custom-alert-overlay.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .custom-alert-icon {
+      font-size: 48px;
+      margin-bottom: var(--space-lg);
+      text-align: center;
+    }
+
+    .custom-alert-message {
+      font-size: var(--font-size-lg);
+      color: var(--primary);
+      text-align: center;
+      line-height: 1.5;
+      margin-bottom: var(--space-xl);
+      background: var(--primary-light);
+      padding: var(--space-lg);
+      border-radius: var(--radius-lg);
+      font-weight: 500;
+    }
+
+    .custom-alert-button {
+      width: 100%;
+      padding: var(--space-lg);
+      background: var(--primary);
+      color: var(--white);
+      border: none;
+      border-radius: var(--radius-lg);
+      font-size: var(--font-size-base);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-base);
+      font-family: var(--font-family);
+      min-height: var(--touch-target);
+    }
+
+    .custom-alert-button:hover {
+      background: #5a4232;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .custom-alert-button:active {
+      transform: translateY(0);
+    }
+
     /* ===== RESPONSIVE DESIGN ===== */
     @media (min-width: 481px) {
       .form-wrapper {
@@ -3032,7 +3118,7 @@
           // For house sitting, validate consecutive dates
           if (window.bookingForm.state.selectedService === 'pet-sitting') {
             if (!this.isConsecutiveDate(dateStr)) {
-              alert('House sitting requires consecutive dates. Please select dates in sequence.');
+              showCustomAlert('House sitting requires consecutive dates. Please select dates in sequence.', '📅');
               return;
             }
           }
@@ -3231,7 +3317,7 @@
           // For house sitting, limit to 2 times per date
           if (window.bookingForm.state.selectedService === 'pet-sitting' && 
               window.bookingForm.state.dateTimes[dateStr].length >= 2) {
-            alert('House sitting allows only 2 times per date (start and end times).');
+            showCustomAlert('House sitting allows only 2 times per date (start and end times).', '⏰');
             return;
           }
           
@@ -3316,6 +3402,65 @@
     function closeTimeModal() {
       if (window.bookingForm && window.bookingForm.timeModal) {
         window.bookingForm.timeModal.close();
+      }
+    }
+
+    // Custom Alert Function with Pink Styling
+    function showCustomAlert(message, icon = '⚠️') {
+      // Remove any existing alert
+      const existingAlert = document.querySelector('.custom-alert');
+      const existingOverlay = document.querySelector('.custom-alert-overlay');
+      if (existingAlert) existingAlert.remove();
+      if (existingOverlay) existingOverlay.remove();
+
+      // Create overlay
+      const overlay = document.createElement('div');
+      overlay.className = 'custom-alert-overlay';
+      
+      // Create alert
+      const alertBox = document.createElement('div');
+      alertBox.className = 'custom-alert';
+      alertBox.innerHTML = `
+        <div class="custom-alert-icon">${icon}</div>
+        <div class="custom-alert-message">${message}</div>
+        <button class="custom-alert-button" onclick="closeCustomAlert()">Got it!</button>
+      `;
+
+      // Add to page
+      document.body.appendChild(overlay);
+      document.body.appendChild(alertBox);
+
+      // Trigger animation
+      setTimeout(() => {
+        overlay.classList.add('show');
+        alertBox.classList.add('show');
+      }, 10);
+
+      // Close on overlay click
+      overlay.onclick = closeCustomAlert;
+
+      // Close on ESC key
+      const escHandler = (e) => {
+        if (e.key === 'Escape') {
+          closeCustomAlert();
+          document.removeEventListener('keydown', escHandler);
+        }
+      };
+      document.addEventListener('keydown', escHandler);
+    }
+
+    function closeCustomAlert() {
+      const alert = document.querySelector('.custom-alert');
+      const overlay = document.querySelector('.custom-alert-overlay');
+      
+      if (alert && overlay) {
+        alert.classList.remove('show');
+        overlay.classList.remove('show');
+        
+        setTimeout(() => {
+          if (alert.parentNode) alert.remove();
+          if (overlay.parentNode) overlay.remove();
+        }, 300);
       }
     }
 
