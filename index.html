@@ -1419,6 +1419,7 @@
       font-size: 48px;
       margin-bottom: var(--space-lg);
       text-align: center;
+      color: var(--primary);
     }
 
     .custom-alert-message {
@@ -3118,7 +3119,7 @@
           // For house sitting, validate consecutive dates
           if (window.bookingForm.state.selectedService === 'pet-sitting') {
             if (!this.isConsecutiveDate(dateStr)) {
-              showCustomAlert('House sitting requires consecutive dates. Please select dates in sequence.', '📅');
+              showCustomAlert('House sitting requires consecutive dates. Please select dates in sequence.', 'fa-calendar-days');
               return;
             }
           }
@@ -3317,7 +3318,7 @@
           // For house sitting, limit to 2 times per date
           if (window.bookingForm.state.selectedService === 'pet-sitting' && 
               window.bookingForm.state.dateTimes[dateStr].length >= 2) {
-            showCustomAlert('House sitting allows only 2 times per date (start and end times).', '⏰');
+            showCustomAlert('House sitting allows only 2 times per date (start and end times).', 'fa-clock');
             return;
           }
           
@@ -3406,7 +3407,7 @@
     }
 
     // Custom Alert Function with Pink Styling
-    function showCustomAlert(message, icon = '⚠️') {
+    function showCustomAlert(message, icon = 'fa-circle-exclamation') {
       // Remove any existing alert
       const existingAlert = document.querySelector('.custom-alert');
       const existingOverlay = document.querySelector('.custom-alert-overlay');
@@ -3421,7 +3422,7 @@
       const alertBox = document.createElement('div');
       alertBox.className = 'custom-alert';
       alertBox.innerHTML = `
-        <div class="custom-alert-icon">${icon}</div>
+        <div class="custom-alert-icon"><i class="fa-solid ${icon}"></i></div>
         <div class="custom-alert-message">${message}</div>
         <button class="custom-alert-button" onclick="closeCustomAlert()">Got it!</button>
       `;
