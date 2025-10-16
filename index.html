@@ -767,6 +767,7 @@
       color: var(--primary);
       min-height: var(--touch-target);
       position: relative;
+      box-sizing: border-box;
     }
 
     .calendar-day:hover:not(.disabled):not(.selected) {
@@ -1439,7 +1440,7 @@
       }
 
       .calendar-container {
-        padding: var(--space-md);
+        padding: var(--space-sm);
         margin: var(--space-sm) 0;
         overflow: hidden;
         width: 100%;
@@ -1678,23 +1679,34 @@
       }
 
       /* Mobile calendar optimizations */
+      .calendar-container {
+        padding: var(--space-sm) !important;
+      }
+
       .calendar-grid {
-        gap: 2px !important;
+        gap: 3px !important;
         padding: 0 !important;
+        width: 100% !important;
       }
 
       .calendar-day {
-        min-height: 42px !important;
-        height: 42px !important;
-        font-size: 13px !important;
-        padding: 4px 2px !important;
+        aspect-ratio: 1 !important;
+        min-height: 38px !important;
+        max-height: 38px !important;
+        height: 38px !important;
+        font-size: 12px !important;
+        padding: 2px !important;
+        border: 1px solid var(--secondary) !important;
         touch-action: manipulation !important;
         -webkit-tap-highlight-color: transparent !important;
+        box-sizing: border-box !important;
+        width: 100% !important;
       }
 
       .calendar-header-day {
-        font-size: 11px !important;
-        padding: 4px 2px !important;
+        font-size: 10px !important;
+        padding: 2px !important;
+        box-sizing: border-box !important;
       }
 
       .selected-date-item {
