@@ -1624,80 +1624,69 @@
       background: var(--primary-light);
       color: var(--primary);
       font-size: 13px;
-      cursor: help;
+      cursor: pointer;
       position: absolute;
       top: 0;
       right: 0;
       z-index: 10;
-      transition: all 0.2s ease;
+      transition: background 0.2s ease, transform 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
     
     .help-icon:hover {
       background: var(--primary);
       color: var(--white);
-      transform: scale(1.1);
     }
 
     .help-icon:active {
       transform: scale(0.95);
     }
 
-    .help-icon:hover::after,
-    .help-icon:active::after {
-      content: attr(data-tooltip);
+    /* Tooltip bubble */
+    .tooltip-bubble {
       position: fixed;
-      top: auto;
-      bottom: auto;
-      left: 50%;
       top: 50%;
+      left: 50%;
       transform: translate(-50%, -50%);
-      padding: var(--space-md) var(--space-lg);
       background: var(--primary);
       color: var(--white);
-      border-radius: var(--radius-md);
-      font-size: var(--font-size-sm);
-      max-width: 280px;
-      width: max-content;
+      padding: var(--space-lg);
+      border-radius: var(--radius-lg);
+      font-size: var(--font-size-base);
+      line-height: 1.6;
+      max-width: 90vw;
+      width: 320px;
+      z-index: 10001;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+    }
+
+    .tooltip-bubble.show {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: all;
+    }
+
+    .tooltip-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
       z-index: 10000;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-      animation: fadeIn 0.2s ease;
-      line-height: 1.5;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
     }
 
-    .help-icon:hover::before {
-      display: none;
-    }
-    
-    /* Desktop tooltip positioning */
-    @media (min-width: 768px) {
-      .help-icon:hover::after,
-      .help-icon:active::after {
-        position: absolute;
-        bottom: 100%;
-        left: 50%;
-        top: auto;
-        transform: translateX(-50%);
-        margin-bottom: 8px;
-      }
-      
-      .help-icon:hover::before,
-      .help-icon:active::before {
-        content: '';
-        display: block;
-        position: absolute;
-        bottom: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        margin-bottom: 2px;
-        border: 6px solid transparent;
-        border-top-color: var(--primary);
-        z-index: 10001;
-      }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateX(-50%) translateY(5px); }
-      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .tooltip-overlay.show {
+      opacity: 1;
+      visibility: visible;
     }
 
     .hint-text {
@@ -2348,7 +2337,7 @@
             <h2 class="section-title">Tell Us About Your Pet</h2>
             <p class="section-subtitle">Help us provide the best care</p>
           </div>
-          <span class="help-icon" data-tooltip="Select the number of each type of pet you'll need care for">?</span>
+          <span class="help-icon" onclick="showTooltip('Select the number of each type of pet you\'ll need care for')">?</span>
         </div>
 
         <!-- Pet Selection -->
@@ -2462,7 +2451,7 @@
             <h2 class="section-title">Choose Your Dates</h2>
             <p class="section-subtitle">Select the dates you need care</p>
           </div>
-          <span class="help-icon" data-tooltip="Click on calendar dates to select them. For house sitting, dates must be consecutive.">?</span>
+          <span class="help-icon" onclick="showTooltip('Click on calendar dates to select them. For house sitting, dates must be consecutive.')">?</span>
         </div>
 
         <div class="calendar-container" data-automation="calendar-container">
@@ -2504,7 +2493,7 @@
             <h2 class="section-title">Select Times</h2>
             <p class="section-subtitle">Choose the best times for your pet's care</p>
           </div>
-          <span class="help-icon" data-tooltip="Click the clock icon next to each date to choose specific times.">?</span>
+          <span class="help-icon" onclick="showTooltip('Click the clock icon next to each date to choose specific times.')">?</span>
         </div>
 
         <div class="selected-dates-container">
@@ -3960,6 +3949,51 @@
       }
     }
 
+    // Tooltip Management
+    let tooltipBubble = null;
+    let tooltipOverlay = null;
+
+    function showTooltip(message) {
+      // Remove existing tooltip if any
+      hideTooltip();
+
+      // Create overlay
+      tooltipOverlay = document.createElement('div');
+      tooltipOverlay.className = 'tooltip-overlay';
+      
+      // Create tooltip bubble
+      tooltipBubble = document.createElement('div');
+      tooltipBubble.className = 'tooltip-bubble';
+      tooltipBubble.textContent = message;
+
+      // Add to page
+      document.body.appendChild(tooltipOverlay);
+      document.body.appendChild(tooltipBubble);
+
+      // Trigger animation
+      requestAnimationFrame(() => {
+        tooltipOverlay.classList.add('show');
+        tooltipBubble.classList.add('show');
+      });
+
+      // Close on overlay click
+      tooltipOverlay.onclick = hideTooltip;
+    }
+
+    function hideTooltip() {
+      if (tooltipBubble) {
+        tooltipBubble.classList.remove('show');
+        tooltipOverlay.classList.remove('show');
+        
+        setTimeout(() => {
+          if (tooltipBubble && tooltipBubble.parentNode) tooltipBubble.remove();
+          if (tooltipOverlay && tooltipOverlay.parentNode) tooltipOverlay.remove();
+          tooltipBubble = null;
+          tooltipOverlay = null;
+        }, 200);
+      }
+    }
+
     // Confetti Animation
     function triggerConfetti() {
       const colors = ['#fce1ef', '#f8b4d9', '#432f21', '#e2b0d5'];
@@ -3990,8 +4024,9 @@
 
     // ===== ACCESSIBILITY ENHANCEMENTS =====
     document.addEventListener('keydown', (e) => {
-      // ESC key closes modals
+      // ESC key closes modals and tooltips
       if (e.key === 'Escape') {
+        hideTooltip();
         closeTimeModal();
         if (window.bookingForm) {
           window.bookingForm.closePetDropdown();
