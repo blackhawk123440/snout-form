@@ -7,9 +7,60 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#432f21">
+  <meta name="apple-mobile-web-app-title" content="Snout Services">
   <title>Snout Pet Care - Booking Form</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <style>
+    /* ===== PERFORMANCE OPTIMIZATIONS ===== */
+    * {
+      box-sizing: border-box;
+    }
+    
+    html {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    /* Optimize form performance */
+    .form-container {
+      will-change: transform;
+      transform: translateZ(0);
+    }
+    
+    /* Smooth transitions */
+    * {
+      transition: all 0.2s ease;
+    }
+    
+    /* Optimize button interactions */
+    button, .btn {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    /* Prevent layout shifts */
+    .form-wrapper {
+      contain: layout style paint;
+    }
+    
+    /* Optimize animations */
+    .btn, .service-card, .type-card, .time-slot, .calendar-day {
+      will-change: transform;
+      transform: translateZ(0);
+    }
+    
+    /* Prevent unnecessary reflows */
+    .form-wrapper * {
+      box-sizing: border-box;
+    }
+    
+    /* Optimize scrolling */
+    .form-wrapper {
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+    
     /* ===== DESIGN SYSTEM ===== */
     :root {
       /* Colors - Snout's warm, modern palette */
@@ -2247,7 +2298,7 @@
   </style>
 </head>
 <body>
-  <div class="form-wrapper">
+  <div class="form-wrapper form-container">
     <div class="booking-form" data-wf-form="booking">
     <!-- Progress Indicator -->
     <div class="progress-container" role="navigation" aria-label="Booking form progress">
@@ -3395,7 +3446,7 @@
         this.state.saveState(); // Auto-save
       }
 
-      submitForm() {
+      async submitForm() {
         if (!this.state.validateStep(5)) return;
 
         // Collect contact information
@@ -3412,28 +3463,113 @@
         this.elements.submitBtn.classList.add('loading');
         this.elements.submitBtn.disabled = true;
 
-        // Simulate form submission
-        setTimeout(() => {
-          // Clear auto-save after successful submission
-          this.state.clearState();
-          this.setupStep(6);
-          // Update iframe height for confirmation page (multiple times to ensure it shrinks)
-          setTimeout(() => {
-            if (typeof sendHeightToParent === 'function') {
-              sendHeightToParent();
-            }
-          }, 50);
-          setTimeout(() => {
-            if (typeof sendHeightToParent === 'function') {
-              sendHeightToParent();
-            }
-          }, 200);
-          setTimeout(() => {
-            if (typeof sendHeightToParent === 'function') {
-              sendHeightToParent();
-            }
-          }, 500);
-        }, 1500);
+        // Map service names to API format
+        const serviceMap = {
+          'dog-walking': 'Dog Walking',
+          'pet-sitting': 'Housesitting',
+          'drop-in': 'Drop-ins',
+          'pet-taxi': 'Pet Taxi'
+        };
+
+        // Get first selected date and time
+        const firstDate = this.state.selectedDates[0];
+        const firstTime = this.state.dateTimes[firstDate]?.[0];
+        
+        // Build pets array from selected pets
+        const pets = [];
+        const petTypeMap = {
+          dogs: 'Dog',
+          cats: 'Cat',
+          farm: 'Farm Animal',
+          reptiles: 'Reptile',
+          birds: 'Bird',
+          other: 'Other'
+        };
+        
+        Object.entries(this.state.pets).forEach(([type, count]) => {
+          for (let i = 0; i < count; i++) {
+            pets.push({
+              name: `${petTypeMap[type]} ${i + 1}`,
+              species: petTypeMap[type]
+            });
+          }
+        });
+
+        // Helper to convert 12-hour time to 24-hour format
+        const convertTo24Hour = (time12h) => {
+          if (!time12h) return '09:00:00';
+          const [time, modifier] = time12h.split(' ');
+          let [hours, minutes] = time.split(':');
+          if (hours === '12') hours = '00';
+          if (modifier === 'PM') hours = parseInt(hours, 10) + 12;
+          return `${String(hours).padStart(2, '0')}:${minutes}:00`;
+        };
+
+        // Convert time and create ISO dates
+        const time24h = convertTo24Hour(firstTime?.time || '09:00 AM');
+        const startDateTime = `${firstDate}T${time24h}`;
+        const duration = firstTime?.duration || 30;
+        const endDateTime = new Date(new Date(startDateTime).getTime() + duration * 60000).toISOString();
+
+        // Build API payload
+        const payload = {
+          firstName: this.state.contactInfo.firstName,
+          lastName: this.state.contactInfo.lastName,
+          phone: this.state.contactInfo.phone,
+          email: this.state.contactInfo.email || undefined,
+          address: this.state.contactInfo.address || undefined,
+          service: serviceMap[this.state.selectedService] || 'Drop-ins',
+          minutes: duration,
+          quantity: 1,
+          startAt: new Date(startDateTime).toISOString(),
+          endAt: endDateTime,
+          pets: pets.length > 0 ? pets : [{ name: 'Pet', species: 'Dog' }],
+          special: this.state.contactInfo.notes || undefined,
+          afterHours: false,
+          holiday: false,
+          createdFrom: 'Webflow'
+        };
+
+        try {
+          // Send to API - PRODUCTION URL
+          // Replace 'your-production-domain.com' with your actual domain
+          const apiUrl = window.location.hostname === 'localhost' 
+            ? window.location.origin + '/api/form'  // Local development
+            : 'https://snout-services.com/api/form'; // Production - UPDATE THIS URL
+          
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload)
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            console.log('✅ Booking created:', data);
+            // Clear auto-save after successful submission
+            this.state.clearState();
+            this.setupStep(6);
+            // Update iframe height for confirmation page
+            setTimeout(() => {
+              if (typeof sendHeightToParent === 'function') {
+                sendHeightToParent();
+              }
+            }, 50);
+          } else {
+            console.error('❌ Booking failed:', data);
+            showCustomAlert(`Booking failed: ${data.error || 'Unknown error'}`, 'fa-circle-exclamation');
+            this.elements.submitBtn.classList.remove('loading');
+            this.elements.submitBtn.disabled = false;
+          }
+        } catch (error) {
+          console.error('❌ Network error:', error);
+          showCustomAlert('Network error. Please check your connection and try again.', 'fa-wifi');
+          this.elements.submitBtn.classList.remove('loading');
+          this.elements.submitBtn.disabled = false;
+        }
       }
 
       startNewBooking() {
